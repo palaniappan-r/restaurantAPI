@@ -2,9 +2,11 @@ const express = require('express')
 const router = express.Router()
 const Restaurant = require('../models/restaurant');
 const { urlencoded } = require('express');
+const methodOverride = require('method-override');
 module.exports = router; 
 
 router.use(urlencoded({ extended: true }));
+router.use(methodOverride('_method'));
 router.get('/' , (req , res) => {
     res.redirect('/restaurants');
 });
@@ -50,6 +52,7 @@ router.get('/restaurants/newItem/:id' , async(req , res) => {
 })
 
 router.post('/restaurants' , async(req , res) => {
+    res.send('editing')
     const rest = new Restaurant(req.body);
     rest.itemCount = 0
     rest.avgPrice = 0
@@ -86,6 +89,11 @@ router.get('/restaurants/:rest_id/:item_id/delete' , async(req , res) => {
 
     rest.save()
     res.redirect(`/restaurants/${rest_id}`)
+})
+
+router.delete('/restaurants/:id' , async(req , res) => {
+    await Restaurant.findByIdAndDelete(req.params.id , req.body)
+    res.redirect(`/restaurants`)
 })
 
 module.exports = router

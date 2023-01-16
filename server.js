@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
-const Restaurant = require('./models/restaurant');
 const methodOverride = require('method-override');
 const { urlencoded } = require('express');
 const ejsMate = require('ejs-mate')

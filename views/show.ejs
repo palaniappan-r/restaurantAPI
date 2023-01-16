@@ -1,6 +1,6 @@
 <% layout ('/layouts/boilerplate') %>
 <h2> <%= rest.name %> </h2>
-<h2>  $ <%= rest.avgPrice %> </h2>
+<h2> Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h2>
 <h3> <%= rest.description %> </h3>
 <h3> <%= rest.location %> </h3>
 <ul>
@@ -15,4 +15,7 @@
 </form>
 <form action="/restaurants/newItem/<%=rest._id %>">
     <button>Add Item</button>
+</form>
+<form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
+    <button>Remove Restaurant</button>
 </form>
