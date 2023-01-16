@@ -1,35 +1,8 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const path = require('path');
+const express = require('express')
+const router = express.Router()
 const Restaurant = require('../models/restaurant');
-const methodOverride = require('method-override');
-const { urlencoded } = require('express');
-const ejsMate = require('ejs-mate')
 
-mongoose.connect('mongodb://localhost:27017/restaurantAppDB' , {
-    useNewUrlParser : true,
-    useUnifiedTopology : true
-});
-
-mongoose.set('strictQuery', false);
-
-mongoose.connection.on("error", console.error.bind(console, "DB Connection Error"));
-mongoose.connection.once("open", () => {
-    console.log("DB Connected");
-});
-
-const router = express(); 
-
-router.set('view engine', 'ejs');
-router.set('views', path.join(__dirname, '../views'));
-router.engine('ejs', ejsMate)
-
-router.use(urlencoded({ extended: true }));
-router.use(methodOverride('_method'));
-
-router.listen(8080 , () => {
-    console.log("Server Running");
-});
+module.exports = router; 
 
 router.get('/' , (req , res) => {
     res.send('Home');
@@ -66,15 +39,10 @@ router.post('/restaurants/:id' , async(req , res) => {
 })
 
 router.get('/restaurants/newItem/:id' , async(req , res) => {
-    try{
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
     rest.itemCount += 1
-    res.render('new_item',{rest,id});
-    }
-    catch(e){
-        res.send(e)
-    }
+    res.render('new_item',{id});
 })
 
 router.post('/restaurants' , async(req , res) => {
@@ -114,4 +82,4 @@ router.get('/restaurants/:rest_id/:item_id/delete' , async(req , res) => {
     res.redirect(`/restaurants/${rest_id}`)
 })
 
-module.exports = router 
+module.exports = router
