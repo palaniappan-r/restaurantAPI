@@ -13,10 +13,12 @@
                         <small class="text-muted"> <%= i.location %> </small>
                     </p>
                     <p class="card-text">
-                        <small class="text-muted"> <%= i.cuisines %> </small>
+                        <% for(let j in i.cuisines) { %> 
+                        <%= i.cuisines[j] %>
+                        <% } %> 
                     </p>
                 </div>
-                <a class="btn btn-primary" href=<%=`/restaurants/${i._id}`%>> View <%= i.name %> </a>
+                <a class="btn btn-primary me-1" href=<%=`/restaurants/${i._id}`%> padding=""> View <%= i.name %> </a>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <% layout ('/layouts/boilerplate') %>
-<h1>Add a New Restaurant</h1>
+<h1>Add a New Item to <%=rest.name%></h1>
 <form action="/restaurants/<%=id%>" method="POST">
     <div>
     <label for="name">Name : </label>
@@ -11,4 +11,3 @@
     </div>
     <button>Submit</button>
 </form>
-<a href="/restaurants">Index</a>

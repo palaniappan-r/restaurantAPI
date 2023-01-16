@@ -19,13 +19,8 @@ const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const genRandNum = (range) => (Math.floor(Math.random() * range) + 1)
 
-
-const cusiArr = () => {
-    let array = ['']
-    for(let i = 0 ; i < 3 ; i++)
-        array[i] = cusines[genRandNum(5)]
-    return array
-}
+const shuffled = cusines.sort(() => 0.5 - Math.random());
+const cusiArr = (n) => shuffled.slice(0,n)
 
 const seedDB = async() => {
     let veganBool = false
@@ -42,7 +37,7 @@ const seedDB = async() => {
             name :`${sample(f_name)} ${sample(s_name)}`,
             location: `${cities[randNum].city}, ${cities[randNum].state}`,
             rating : `${genRandNum(5)}`,
-            cuisines : cusiArr(),
+            cuisines : cusiArr(genRandNum(8)),
             avgPrice : 0,
             vegan : veganBool,
             itemCount : 0
