@@ -1,0 +1,24 @@
+<% layout ('/layouts/boilerplate') %>
+<h1>Restaurants</h1>
+<ul>
+<% for(i of rests) { %> 
+    <div class="card" mb-3>
+        <div class="row">
+            <div clas="col-mg-8">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <%= i.name %> 
+                    </h5>
+                    <p class="card-text">
+                        <small class="text-muted"> <%= i.location %> </small>
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted"> <%= i.cuisines %> </small>
+                    </p>
+                </div>
+                <a class="btn btn-primary" href=<%=`/restaurants/${i._id}`%>> View <%= i.name %> </a>
+            </div>
+        </div>
+    </div>
+<% } %>
+</ul> 

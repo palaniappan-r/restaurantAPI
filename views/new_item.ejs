@@ -1,0 +1,14 @@
+<% layout ('/layouts/boilerplate') %>
+<h1>Add a New Restaurant</h1>
+<form action="/restaurants/<%=id%>" method="POST">
+    <div>
+    <label for="name">Name : </label>
+    <input type="text" placeholder="Enter Name" id="name" name="name">
+    </div>
+    <div>
+    <label for="price">Price : </label>
+    <input type="number" placeholder="Enter Price" id="price" name="price">
+    </div>
+    <button>Submit</button>
+</form>
+<a href="/restaurants">Index</a>

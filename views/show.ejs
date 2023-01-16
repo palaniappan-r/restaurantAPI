@@ -1,0 +1,18 @@
+<% layout ('/layouts/boilerplate') %>
+<h2> <%= rest.name %> </h2>
+<h2>  $ <%= rest.avgPrice %> </h2>
+<h3> <%= rest.description %> </h3>
+<h3> <%= rest.location %> </h3>
+<ul>
+    <% for(i of rest.items) {%>
+        <li><%=i.name%> - ₹<%=i.price%> <form action="/restaurants/<%=rest._id %>/<%=i._id%>/delete"><button a = '/campg'>Delete Item</button></li></form>
+    <% } %>
+</ul>
+<img src="<%= rest.image %>" alt="">
+
+<form action="/restaurants/<%=rest._id %>/update">
+    <button>Update</button>
+</form>
+<form action="/restaurants/newItem/<%=rest._id %>">
+    <button>Add Item</button>
+</form>
