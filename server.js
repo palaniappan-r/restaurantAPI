@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const { urlencoded } = require('express');
 const ejsMate = require('ejs-mate')
 
-const restaurants = require('./routes/restaurants')
+const restaurants = require('./routes/restaurants.js')
 
 mongoose.connect('mongodb://localhost:27017/restaurantAppDB' , {
     useNewUrlParser : true,
@@ -22,6 +22,16 @@ mongoose.connection.once("open", () => {
 
 const app = express(); 
 
-app.use('/restaurants',restaurants)
+app.use('/',restaurants)
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+app.engine('ejs', ejsMate)
+
+app.use(urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+
+app.listen(8080 , () => {
+    console.log("Server Running");
+});
 
