@@ -6,7 +6,7 @@ const methodOverride = require('method-override');
 const { urlencoded } = require('express');
 const ejsMate = require('ejs-mate')
 
-mongoose.connect('mongodb://localhost:27017/restaurantApp5' , {
+mongoose.connect('mongodb://localhost:27017/restaurantAppDB' , {
     useNewUrlParser : true,
     useUnifiedTopology : true
 });
