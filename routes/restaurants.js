@@ -45,13 +45,16 @@ router.get('/restaurants/newItem/:id' , async(req , res) => {
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
     rest.itemCount += 1
+    await rest.save()
     res.render('new_item',{id,rest});
 })
 
 router.post('/restaurants' , async(req , res) => {
     const rest = new Restaurant(req.body);
-    res.itemsCount = 0
+    rest.itemCount = 0
+    rest.avgPrice = 0
     await rest.save();
+    console.log(rest)
     res.redirect('/restaurants')
 })
 
