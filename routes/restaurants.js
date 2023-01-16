@@ -1,9 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const Restaurant = require('../models/restaurant');
-
+const { urlencoded } = require('express');
 module.exports = router; 
 
+router.use(urlencoded({ extended: true }));
 router.get('/' , (req , res) => {
     res.redirect('/restaurants');
 });
@@ -27,7 +28,9 @@ router.post('/restaurants/:id' , async(req , res) => {
     console.log(req.body)
     const {id} = req.params;
     const rest = await Restaurant.findById(id)
-    rest.items.push(req.body)
+   rest.items.push(req.body)
+
+    await rest.save()
 
     let avgP = 0
     for(i of rest.items)
@@ -35,14 +38,14 @@ router.post('/restaurants/:id' , async(req , res) => {
     rest.avgPrice = (avgP/rest.itemCount)
 
     await rest.save()
-    res.redirect(`/restaurants/${id}`)
+    res.redirect(`/restaurants/${id}`) 
 })
 
 router.get('/restaurants/newItem/:id' , async(req , res) => {
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
     rest.itemCount += 1
-    res.render('new_item',{id});
+    res.render('new_item',{id,rest});
 })
 
 router.post('/restaurants' , async(req , res) => {
