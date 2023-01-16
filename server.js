@@ -31,7 +31,7 @@ app.engine('ejs', ejsMate)
 app.use(urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
 
-app.listen(8080 , () => {
+app.listen(3000 , () => {
     console.log("Server Running");
 });
 

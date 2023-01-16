@@ -5,7 +5,7 @@ const Restaurant = require('../models/restaurant');
 module.exports = router; 
 
 router.get('/' , (req , res) => {
-    res.send('Home');
+    res.redirect('/restaurants');
 });
 
 router.get('/restaurants' , async (req, res) => {
