@@ -2,25 +2,27 @@
 <h1>Restaurants</h1>
 <ul>
 <% for(i of rests) { %> 
-    <div class="card" mb-3>
-        <div class="row">
-            <div clas="col-mg-8">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <%= i.name %> 
-                    </h5>
-                    <p class="card-text">
-                        <small class="text-muted"> <%= i.location %> </small>
-                    </p>
-                    <p class="card-text">
-                        <% for(let j in i.cuisines) { %> 
-                        <%= i.cuisines[j] %>
-                        <% } %> 
-                    </p>
-                </div>
-                <a class="btn btn-primary me-1" href=<%=`/restaurants/${i._id}`%> padding=""> View <%= i.name %> </a>
-            </div>
+    <div class="card text-center">
+        <div class="card-header">
+           <h1> <%= i.name %> </h1>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title"><%= i.location %></h6>
+          <p class="card-text">
+            <% for(let j in i.cuisines) { %> 
+                <span class="badge badge-danger"> <%= i.cuisines[j] %></span>
+            <% } %> 
+          </p>
+          <a href=<%=`/restaurants/${i._id}`%> class="btn btn-primary">View Menu</a>
+        </div>
+        <div class="card-footer text-muted">
+           Avg Price : <%=`₹${Math.ceil(i.avgPrice)}`%>
         </div>
     </div>
+<br>  
 <% } %>
 </ul> 
+
+
+
+

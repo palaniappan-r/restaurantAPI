@@ -52,9 +52,20 @@ router.get('/restaurants/newItem/:id' , async(req , res) => {
 })
 
 router.post('/restaurants' , async(req , res) => {
-    res.send('editing')
     const rest = new Restaurant(req.body);
-    rest.itemCount = 0
+    if(req.body.cus1 == "on")
+        rest.cuisines.push('Indian')
+    if(req.body.cus2== "on")
+        rest.cuisines.push('Pan-Asian')
+    if(req.body.cus3 == "on")
+        rest.cuisines.push('Chinese')
+    if(req.body.cus4 == "on")
+        rest.cuisines.push('Continental')
+    if(req.body.cus5 == "on")
+        rest.cuisines.push('Japanese')
+    if(req.body.cus1 == "on")
+        rest.cuisines.push('Korean')
+   rest.itemCount = 0
     rest.avgPrice = 0
     await rest.save();
     console.log(rest)

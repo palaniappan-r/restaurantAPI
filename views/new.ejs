@@ -1,17 +1,28 @@
 <% layout ('/layouts/boilerplate') %>
-<h1>Add a New Restaurant</h1>
+<% layout ('/layouts/boilerplate') %>
+<h2>Add a New Restaurant</h2><br>
 <form action="/restaurants" method="POST">
-    <div>
-    <label for="name">Name : </label>
-    <input type="text" placeholder="Enter Name" id="name" name="name">
+    <div class="form-group">
+      <h4>Name</h4>
+      <input type="text" class="form-control" id="name" aria-describedby="name" name="name"><br>
+    <h4>Cuisines</h4>
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="cus1" name="cus1">
+        <label class="form-check-label" for="cus1">Indian</label><br>
+        <input type="checkbox" class="form-check-input" id="cus2" name="cus2">
+        <label class="form-check-label" for="cus1">Pan-Asian</label><br>
+        <input type="checkbox" class="form-check-input" id="cus3" name="cus3">
+        <label class="form-check-label" for="cus1">Chinese</label><br>
+        <input type="checkbox" class="form-check-input" id="cus4" name="cus4">
+        <label class="form-check-label" for="cus1">Continental</label><br>
+        <input type="checkbox" class="form-check-input" id="cus5" name="cus5">
+        <label class="form-check-label" for="cus1">Japanese</label><br>
+        <input type="checkbox" class="form-check-input" id="cus6" name="cus6">
+        <label class="form-check-label" for="cus1">Korean</label>
     </div>
-    <div>
-    <label for="cusines">Cuisines : </label>
-    <input type="text" placeholder="Enter Cuisines" id="cuisines" name="cuisines">
-    </div>
-    <label for="location">Location :</label>
-    <input type="text" placeholder="Enter Location" id="location" name="location">
-    <br>
-    <button>Submit</button>
+    <div class="form-group">
+        <h4>Location</h4>
+        <input type="text" class="form-control" id="location" aria-describedby="location" name="location">
+      </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-<a href="/restaurants">Index</a>
