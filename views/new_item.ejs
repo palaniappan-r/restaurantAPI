@@ -1,13 +1,12 @@
 <% layout ('/layouts/boilerplate') %>
-<h1>Add a New Item to <%=rest.name%></h1>
+<h1> <span class="badge badge-success text-center"> Add Item to <%=rest.name%> </span> </h1><br>
 <form action="/restaurants/<%=id%>" method="POST">
-    <div>
-    <label for="name">Name : </label>
-    <input type="text" placeholder="Enter Name" id="name" name="name">
+    <div class="form-group">
+      <h4>Name</h4>
+      <input type="text" class="form-control" id="name" aria-describedby="name" name="name"><br>
+    <div class="form-group">
+        <h4>Price</h4>
+        <input type="number" class="form-control" id="price" aria-describedby="price" name="price">
     </div>
-    <div>
-    <label for="price">Price : </label>
-    <input type="number" placeholder="Enter Price" id="price" name="price">
-    </div>
-    <button>Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>

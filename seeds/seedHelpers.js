@@ -1,4 +1,6 @@
+
 module.exports.f_name = [
+    '',
     'Tasty',
     'Delish',
     'Roaring',
@@ -10,6 +12,7 @@ module.exports.f_name = [
 ]
 
 module.exports.s_name = [
+    '',
     'Tavern',
     'Hut',
     'Shack',
@@ -45,3 +48,26 @@ module.exports.item_name2 = [
     'Sandwich'
 ]
 
+module.exports.city_name = [
+    '',
+    'New York',
+    'Hyderabad',
+    'Chennai',
+    'Bombay',
+    'Kolkata',
+    'Bangalore',
+    'Kochi',
+    'Secundrabad'
+]
+
+module.exports.area_name = [
+    '',
+    'Malleswaram',
+    'Kukatpally',
+    'Indra Nagar',
+    'KK Nagar',
+    'Town',
+    'New Mall',
+    'Town Square',
+    'Marine Drive'
+]

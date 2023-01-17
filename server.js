@@ -7,7 +7,7 @@ const ejsMate = require('ejs-mate')
 
 const restaurants = require('./routes/restaurants.js')
 
-mongoose.connect('mongodb://localhost:27017/restaurantAppDB' , {
+mongoose.connect('mongodb://localhost:27017/restaurantApp' , {
     useNewUrlParser : true,
     useUnifiedTopology : true
 });

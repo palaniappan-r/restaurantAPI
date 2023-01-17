@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
-const cities = require('./cities');
-const { f_name, s_name, cusines , item_name1 , item_name2 } = require('./seedHelpers');
+const { f_name, s_name, cusines , item_name1 , item_name2  , city_name , area_name} = require('./seedHelpers');
 const Restaurant = require('../models/restaurant');
 
 Restaurant.deleteMany({}) //Clearing DB
 
-mongoose.connect('mongodb://localhost:27017/restaurantAppDB', {
+mongoose.connect('mongodb://localhost:27017/restaurantApp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -14,8 +13,6 @@ mongoose.connection.on("error", console.error.bind(console, "DB Connection Error
 mongoose.connection.once("open", () => {
     console.log("DB Connected");
 });
-
-const sample = array => array[Math.floor(Math.random() * array.length)];
 
 const genRandNum = (range) => (Math.floor(Math.random() * range) + 1)
 
@@ -34,8 +31,8 @@ const seedDB = async() => {
             veganBool = false
 
         const restaurant = new Restaurant({
-            name :`${sample(f_name)} ${sample(s_name)}`,
-            location: `${cities[randNum].city}, ${cities[randNum].state}`,
+            name :`${f_name[genRandNum(7)]} ${s_name[genRandNum(7)]}`,
+            location: `${area_name[genRandNum(7)]},${city_name[genRandNum(7)]} `,
             rating : `${genRandNum(5)}`,
             cuisines : cusiArr(genRandNum(8)),
             avgPrice : 0,
@@ -55,10 +52,9 @@ const seedDB = async() => {
         }
 
         restaurant.avgPrice /= 10
-
-        console.log(restaurant)
         await restaurant.save();
     }
+    console.log('DB Populated')
 }
 
 seedDB().then(() => {

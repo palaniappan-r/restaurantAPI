@@ -1,23 +1,25 @@
 <% layout ('/layouts/boilerplate') %>
-<h2> <%= rest.name %> </h2>
-<h2> Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h2>
-<h3> <%= rest.description %> </h3>
-<h3> <%= rest.location %> </h3>
+<h1 class="display-1 text-center"> <%= rest.name %> </h1>
+<h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
+<h6> <%= rest.description %> </h6>
+<h6 class="text-muted"> <%= rest.location %> </h6>
 <ul class="list-group">
     <% for(i of rest.items) {%>
-        <li class="list-group-item"><%=i.name%> - ₹<%=i.price%> <form action="/restaurants/<%=rest._id %>/<%=i._id%>/delete"><button a = '/campg'>Delete Item</button></li></form>
+        <div class="d-inline">
+            <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3></div> 
+                <a href="/restaurants/<%=rest._id %>/<%=i._id%>/delete" class="btn btn-outline-danger"> Delete Item </a>
+            </li><br>
+        </div>
     <% } %>
 </ul>
 <img src="<%= rest.image %>" alt="">
 
-<form action="/restaurants/<%=rest._id %>/update">
-    <button>Edit Details</button>
-</form>
-<form action="/restaurants/newItem/<%=rest._id %>">
-    <button>Add Item</button>
-</form>
+<a href="/restaurants/<%=rest._id %>/update" class="btn btn-info btn-lg btn-block">Edit Details</a><br>
+<a href="/restaurants/newItem/<%=rest._id %>" class="btn btn-success btn-lg btn-block">Add Item</a><br>
 <form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
-    <button>Remove Restaurant</button>
-</form>
+<button class="btn btn-danger btn-lg btn-block">Remove Restaurant</button>
+</form><br>
+
+
 
 
