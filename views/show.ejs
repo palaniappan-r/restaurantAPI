@@ -1,13 +1,14 @@
 <% layout ('/layouts/boilerplate') %>
 <h1 class="display-1 text-center"> <%= rest.name %> </h1>
 <h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
+<h6>Items in Menu : <%= rest.itemCount %> </h6>
 <h6> <%= rest.description %> </h6>
 <h6 class="text-muted"> <%= rest.location %> </h6>
 <ul class="list-group">
     <% for(i of rest.items) {%>
         <div class="d-inline">
             <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3></div> 
-                <a href="/restaurants/<%=rest._id %>/<%=i._id%>/delete" class="btn btn-outline-danger"> Delete Item </a>
+                <form action="/restaurants/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "class=btn btn-outline-danger">Delete Item </button></form>
             </li><br>
         </div>
     <% } %>
@@ -19,6 +20,8 @@
 <form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
 <button class="btn btn-danger btn-lg btn-block">Remove Restaurant</button>
 </form><br>
+
+<form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST"></form>
 
 
 

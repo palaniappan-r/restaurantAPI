@@ -2,7 +2,7 @@
 <div class="mx-auto" style="width: 200px;">
     <h1> <span class="badge badge-success"> Edit Restaurant </span> </h1><br>
 </div>
-<form action="/restaurants" method="POST">
+<form action="/restaurants/<%=rest._id %>?_method=PUT" method="POST">
     <div class="form-group">
       <h4>Name</h4>
       <input type="text" class="form-control" id="name" aria-describedby="name" name="name" value="<%= `${rest.name}`%>"><br>
