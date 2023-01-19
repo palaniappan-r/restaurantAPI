@@ -3,28 +3,48 @@
 <div class="mx-auto" style="width: 200px;">
     <h1> <span class="badge badge-success"> Add Restaurant </span> </h1><br>
 </div>
-<form action="/restaurants" method="POST">
+<form action="/restaurants" method="POST" novalidate class="validated-form">
     <div class="form-group">
       <h4>Name</h4>
-      <input type="text" class="form-control" id="name" aria-describedby="name" name="name"><br>
+      <input type="text" class="form-control" id="name" aria-describedby="name" name="name" required><br>
     <h4>Cuisines</h4>
     <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="cus1" name="cus1">
+        <input type="checkbox" class="form-check-input" id="cus1" name="cus1" >
         <label class="form-check-label" for="cus1">Indian</label><br>
-        <input type="checkbox" class="form-check-input" id="cus2" name="cus2">
+        <input type="checkbox" class="form-check-input" id="cus2" name="cus2" >
         <label class="form-check-label" for="cus1">Pan-Asian</label><br>
-        <input type="checkbox" class="form-check-input" id="cus3" name="cus3">
+        <input type="checkbox" class="form-check-input" id="cus3" name="cus3" >
         <label class="form-check-label" for="cus1">Chinese</label><br>
-        <input type="checkbox" class="form-check-input" id="cus4" name="cus4">
+        <input type="checkbox" class="form-check-input" id="cus4" name="cus4" >
         <label class="form-check-label" for="cus1">Continental</label><br>
-        <input type="checkbox" class="form-check-input" id="cus5" name="cus5">
+        <input type="checkbox" class="form-check-input" id="cus5" name="cus5" >
         <label class="form-check-label" for="cus1">Japanese</label><br>
-        <input type="checkbox" class="form-check-input" id="cus6" name="cus6">
+        <input type="checkbox" class="form-check-input" id="cus6" name="cus6" >
         <label class="form-check-label" for="cus1">Korean</label>
     </div>
     <div class="form-group">
         <h4>Location</h4>
-        <input type="text" class="form-control" id="location" aria-describedby="location" name="location">
+        <input type="text" class="form-control" id="location" aria-describedby="location" name="location" required>
       </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script>
+  (function () {
+    'use strict'
+    var forms = document.querySelectorAll('.validated-form')
+  
+  
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+  
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+</script>

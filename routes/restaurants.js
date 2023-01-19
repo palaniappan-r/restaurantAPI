@@ -3,7 +3,12 @@ const router = express.Router()
 const Restaurant = require('../models/restaurant');
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
+const catchError = require('../utilities/catchError')
+const errorClass = require('../utilities/errorClass')
+const itemSchema = require('../models/item.js')
+const joi = require('joi')
 module.exports = router; 
+
 
 let temp
 
@@ -13,25 +18,44 @@ router.get('/' , (req , res) => {
     res.redirect('/restaurants');
 });
 
-router.get('/restaurants' , async (req, res) => { //GET Route for Index Page
+router.get('/restaurants' , catchError(async(req, res) => { //GET Route for Index Page
     const rests = await Restaurant.find({});
     res.render('index' , {rests});
-})
+}))
 
-router.get('/restaurants/new' , async(req , res) => { //GET Route for new restaurant form
+router.get('/restaurants/new' , catchError(async(req , res) => { //GET Route for new restaurant form
     res.render('new');
-})
+}))
 
-router.get('/restaurants/:id' , async(req , res) => { //GET Route to display info about a specific restaurant
+router.get('/restaurants/:id' , catchError(async(req , res) => { //GET Route to display info about a specific restaurant
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
     res.render('show',{rest});
-})
+}))
 
-router.post('/restaurants/:id' , async(req , res) => { //POST Route for new item form
+router.post('/restaurants/:id' , catchError(async(req , res) => { //POST Route for new item
+    
+    const itemSchema = joi.object({
+        item: joi.object({
+            name: joi.string().required(),
+            price : joi.number().required().min(0),
+        }).required()
+    })
+    
+    const {err} = itemSchema.validate(req.body)
+
+    if(err){
+        const msg = err.details.map(e => e.message).join(',')
+        throw errorClass( 'hi' , 404)
+    }
+
     const {id} = req.params;
     const rest = await Restaurant.findById(id)
-   rest.items.push(req.body)
+    
+    rest.itemCount += 1
+    await rest.save()
+
+    rest.items.push(req.body)
 
     await rest.save()
 
@@ -42,17 +66,27 @@ router.post('/restaurants/:id' , async(req , res) => { //POST Route for new item
 
     await rest.save()
     res.redirect(`/restaurants/${id}`) 
-})
+}))
 
-router.get('/restaurants/newItem/:id' , async(req , res) => { //GET Route to add an item to a restaurant
+router.get('/restaurants/newItem/:id' , catchError(async(req , res) => { //GET Route for new item form
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
-    rest.itemCount += 1
-    await rest.save()
     res.render('new_item',{id,rest});
-})
+}))
 
-router.post('/restaurants' , async(req , res) => { //POST Route to add a Restaurant
+router.post('/restaurants' , catchError(async(req , res) => { //POST Route to add a Restaurant
+   
+    const restaurantSchema = joi.object({
+        restaurant: joi.object({
+            title: joi.string().required(),
+            location : joi.string().required()
+        }).required()
+    })
+
+    const {err} = restaurantSchema.validate(req.body)
+    if(err)
+        throw errorClass(err.details.map(e => e.message).join(',') , 404)
+
     const rest = new Restaurant(req.body);
     if(req.body.cus1 == "on")
         rest.cuisines.push('Indian')
@@ -69,17 +103,18 @@ router.post('/restaurants' , async(req , res) => { //POST Route to add a Restaur
    rest.itemCount = 0
     rest.avgPrice = 0
     await rest.save();
-    res.redirect('/restaurants')
-})
 
-router.get('/restaurants/:id/update' , async(req , res) => { //GET Route for edit restaurant form
+    res.redirect(`/restaurants/${rest._id}`)
+}))
+
+router.get('/restaurants/:id/update' , catchError(async(req , res) => { //GET Route for edit restaurant form
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
     temp = [rest.items , rest.avgPrice , rest.itemCount]
     res.render('update',{rest});
-})
+}))
 
-router.put('/restaurants/:id' , async(req , res) => { //PUT Route to update restaurant details
+router.put('/restaurants/:id' , catchError(async(req , res) => { //PUT Route to update restaurant details
     await Restaurant.findByIdAndUpdate(req.params.id , req.body)
     const rest = await Restaurant.findById(req.params.id)
     rest.items = temp[0]
@@ -87,9 +122,9 @@ router.put('/restaurants/:id' , async(req , res) => { //PUT Route to update rest
     rest.itemCount = temp[2]
     rest.save()
     res.redirect(`/restaurants/${req.params.id}`)
-})
+}))
 
-router.delete('/restaurants/:rest_id/:item_id' , async(req , res) => { //DELETE Route to remove an item
+router.delete('/restaurants/:rest_id/:item_id' , catchError(async(req , res) => { //DELETE Route to remove an item
     const rest_id = req.params.rest_id
     const item_id = req.params.item_id
     const rest = await Restaurant.findById(rest_id)
@@ -110,14 +145,13 @@ router.delete('/restaurants/:rest_id/:item_id' , async(req , res) => { //DELETE 
     else
         rest.avgPrice = 0
 
-
     rest.save()
     res.redirect(`/restaurants/${rest_id}`)
-})
+}))
 
-router.delete('/restaurants/:id' , async(req , res) => { //DELETE Route to remove a restaurant
+router.delete('/restaurants/:id' , catchError(async(req , res) => { //DELETE Route to remove a restaurant
     await Restaurant.findByIdAndDelete(req.params.id , req.body)
     res.redirect(`/restaurants`)
-})
+}))
 
 module.exports = router

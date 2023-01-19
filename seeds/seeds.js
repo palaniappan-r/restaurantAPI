@@ -4,7 +4,8 @@ const Restaurant = require('../models/restaurant');
 
 Restaurant.deleteMany({}) //Clearing DB
 
-mongoose.connect('mongodb://localhost:27017/restaurantApp', {
+mongoose.set("strictQuery", false);
+mongoose.connect('mongodb://127.0.0.1:27017/restaurantApp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });

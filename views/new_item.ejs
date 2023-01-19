@@ -1,12 +1,33 @@
 <% layout ('/layouts/boilerplate') %>
 <h1> <span class="badge badge-success text-center"> Add Item to <%=rest.name%> </span> </h1><br>
-<form action="/restaurants/<%=id%>" method="POST">
+<form action="/restaurants/<%=id%>" method="POST" novalidate class="validated-form">
     <div class="form-group">
       <h4>Name</h4>
-      <input type="text" class="form-control" id="name" aria-describedby="name" name="name"><br>
+      <input type="text" class="form-control" id="name" aria-describedby="name" name="name" required><br>
     <div class="form-group">
         <h4>Price</h4>
-        <input type="number" class="form-control" id="price" aria-describedby="price" name="price">
+        <input type="number" class="form-control" id="price" aria-describedby="price" name="price" required>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+
+<script>
+  (function () {
+    'use strict'
+    var forms = document.querySelectorAll('.validated-form')
+  
+  
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+  
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
+</script>
