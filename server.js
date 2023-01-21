@@ -5,7 +5,7 @@ const methodOverride = require('method-override');
 const { urlencoded } = require('express');
 const ejsMate = require('ejs-mate')
 const catchError = require('./utilities/catchError.js')
-const errorClass = require('./utilities/errorClass.js')
+const ErrorClass = require('./utilities/ErrorClass.js')
 
 const restaurants = require('./routes/restaurants.js')
 
@@ -36,14 +36,14 @@ app.listen(3000 , () => {
 });
 
 app.all('*' , (req , res , next) => {
-    next(new errorClass('PAGE NOT FOUND' , 404))
+    next(new ErrorClass('PAGE NOT FOUND' , 404))
 })
 
 app.use((err , req , res , next) => {
-
-    const msg = err.msg
-    const status = err.status
-
-    res.status(status , msg).render('errorPage' , {msg , status})
+    console.log("in use")
+    console.log(err)
+    const {statusCode = 400 , message = "ERROR"} = err
+    //res.status(status).send(msg)
+    res.render('errorPage' , {message , statusCode})
 })
 

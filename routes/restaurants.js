@@ -4,9 +4,8 @@ const Restaurant = require('../models/restaurant');
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const catchError = require('../utilities/catchError')
-const errorClass = require('../utilities/errorClass')
-const itemSchema = require('../models/item.js')
-const joi = require('joi')
+const ErrorClass = require('../utilities/ErrorClass.js')
+const joi = require('joi');
 module.exports = router; 
 
 
@@ -34,33 +33,31 @@ router.get('/restaurants/:id' , catchError(async(req , res) => { //GET Route to 
 }))
 
 router.post('/restaurants/:id' , catchError(async(req , res) => { //POST Route for new item
-    
+
     const itemSchema = joi.object({
         item: joi.object({
             name: joi.string().required(),
-            price : joi.number().required().min(0),
+            price : joi.number().required(),
         }).required()
     })
-    
-    const {err} = itemSchema.validate(req.body)
 
-    if(err){
-        const msg = err.details.map(e => e.message).join(',')
-        throw errorClass( 'hi' , 404)
-    }
+    const rslt = itemSchema.validate(req.body)
+
+   if(rslt.error)
+    throw new ErrorClass(rslt.error , 404)
 
     const {id} = req.params;
-    const rest = Restaurant.findById(id)
+    const rest = await Restaurant.findById(id)
     
     rest.itemCount += 1
     await rest.save()
 
-    rest.items.push(req.body)
+    rest.items.push(req.body.item)
 
     await rest.save()
 
     let avgP = 0
-    for(i of rest.items)
+    for(let i of rest.items)
         avgP += i.price
     rest.avgPrice = (avgP/rest.itemCount)
 
@@ -75,36 +72,43 @@ router.get('/restaurants/newItem/:id' , catchError(async(req , res) => { //GET R
 }))
 
 router.post('/restaurants' , catchError(async(req , res) => { //POST Route to add a Restaurant
-   
     const restaurantSchema = joi.object({
         restaurant: joi.object({
-            title: joi.string().required(),
-            location : joi.string().required()
+            name: joi.string().required(),
+            cus1 : joi.any(),
+            cus2 : joi.any(),
+            cus3 : joi.any(),
+            cus4 : joi.any(),
+            cus5 : joi.any(),
+            cus6 : joi.any(),
+            location : joi.string().required(),
         }).required()
     })
 
-    const {err} = restaurantSchema.validate(req.body)
-    if(err)
-        throw errorClass(err.details.map(e => e.message).join(',') , 404)
+    const rslt = restaurantSchema.validate(req.body)
+    console.log(rslt)
 
-    const rest = new Restaurant(req.body);
-    if(req.body.cus1 == "on")
-        rest.cuisines.push('Indian')
-    if(req.body.cus2== "on")
-        rest.cuisines.push('Pan-Asian')
-    if(req.body.cus3 == "on")
-        rest.cuisines.push('Chinese')
-    if(req.body.cus4 == "on")
-        rest.cuisines.push('Continental')
-    if(req.body.cus5 == "on")
-        rest.cuisines.push('Japanese')
-    if(req.body.cus1 == "on")
-        rest.cuisines.push('Korean')
-   rest.itemCount = 0
-    rest.avgPrice = 0
-    await rest.save();
+   if(rslt.error)
+    throw new ErrorClass(rslt.error , 404)
 
-    res.redirect(`/restaurants/${rest._id}`)
+const rest = new Restaurant(req.body.restaurant);
+if(req.body.cus1 == "on")
+    rest.cuisines.push('Indian')
+if(req.body.cus2== "on")
+    rest.cuisines.push('Pan-Asian')
+if(req.body.cus3 == "on")
+    rest.cuisines.push('Chinese')
+if(req.body.cus4 == "on")
+    rest.cuisines.push('Continental')
+if(req.body.cus5 == "on")
+    rest.cuisines.push('Japanese')
+if(req.body.cus6 == "on")
+    rest.cuisines.push('Korean')
+rest.itemCount = 0
+rest.avgPrice = 0
+await rest.save();
+
+res.redirect(`/restaurants/${rest._id}`)
 }))
 
 router.get('/restaurants/:id/update' , catchError(async(req , res) => { //GET Route for edit restaurant form
@@ -115,8 +119,44 @@ router.get('/restaurants/:id/update' , catchError(async(req , res) => { //GET Ro
 }))
 
 router.put('/restaurants/:id' , catchError(async(req , res) => { //PUT Route to update restaurant details
-    await Restaurant.findByIdAndUpdate(req.params.id , req.body)
+    const restaurantSchema = joi.object({
+        restaurant: joi.object({
+            name: joi.string().required(),
+            cus1 : joi.any(),
+            cus2 : joi.any(),
+            cus3 : joi.any(),
+            cus4 : joi.any(),
+            cus5 : joi.any(),
+            cus6 : joi.any(),
+            location : joi.string().required(),
+        }).required()
+    })
+
+    const rslt = restaurantSchema.validate(req.body)
+
+   if(rslt.error)
+    throw new ErrorClass(rslt.error , 404)
+
+    console.log(req.body.restaurant)
+
+    await Restaurant.findByIdAndUpdate(req.params.id , req.body.restaurant)
     const rest = await Restaurant.findById(req.params.id)
+
+    rest.cuisines = []
+
+    if(req.body.restaurant.cus1 == "on")
+        rest.cuisines.push('Indian')
+    if(req.body.restaurant.cus2== "on")
+        rest.cuisines.push('Pan-Asian')
+    if(req.body.restaurant.cus3 == "on")
+        rest.cuisines.push('Chinese')
+    if(req.body.restaurant.cus4 == "on")
+        rest.cuisines.push('Continental')
+    if(req.body.restaurant.cus5 == "on")
+        rest.cuisines.push('Japanese')
+    if(req.body.restaurant.cus6 == "on")
+        rest.cuisines.push('Korean')
+
     rest.items = temp[0]
     rest.avgPrice = temp[1]
     rest.itemCount = temp[2]
@@ -153,5 +193,10 @@ router.delete('/restaurants/:id' , catchError(async(req , res) => { //DELETE Rou
     await Restaurant.findByIdAndDelete(req.params.id , req.body)
     res.redirect(`/restaurants`)
 }))
+
+router.use((err , req , res , next) => {
+    const {statusCode = 400 , message = "ERROR"} = err
+    res.render('errorPage' , {statusCode , message})
+})
 
 module.exports = router

@@ -6,25 +6,25 @@
 <form action="/restaurants" method="POST" novalidate class="validated-form">
     <div class="form-group">
       <h4>Name</h4>
-      <input type="text" class="form-control" id="name" aria-describedby="name" name="name" required><br>
+      <input type="text" class="form-control" id="name" aria-describedby="name" name="restaurant[name]" required><br>
     <h4>Cuisines</h4>
     <div class="form-group form-check">
-        <input type="checkbox" class="form-check-input" id="cus1" name="cus1" >
+        <input type="checkbox" class="form-check-input" id="cus1" name="restaurant[cus1]" >
         <label class="form-check-label" for="cus1">Indian</label><br>
-        <input type="checkbox" class="form-check-input" id="cus2" name="cus2" >
-        <label class="form-check-label" for="cus1">Pan-Asian</label><br>
-        <input type="checkbox" class="form-check-input" id="cus3" name="cus3" >
-        <label class="form-check-label" for="cus1">Chinese</label><br>
-        <input type="checkbox" class="form-check-input" id="cus4" name="cus4" >
-        <label class="form-check-label" for="cus1">Continental</label><br>
-        <input type="checkbox" class="form-check-input" id="cus5" name="cus5" >
-        <label class="form-check-label" for="cus1">Japanese</label><br>
-        <input type="checkbox" class="form-check-input" id="cus6" name="cus6" >
-        <label class="form-check-label" for="cus1">Korean</label>
+        <input type="checkbox" class="form-check-input" id="cus2" name="restaurant[cus2]" >
+        <label class="form-check-label" for="cus2">Pan-Asian</label><br>
+        <input type="checkbox" class="form-check-input" id="cus3" name="restaurant[cus3]" >
+        <label class="form-check-label" for="cus3">Chinese</label><br>
+        <input type="checkbox" class="form-check-input" id="cus4" name="restaurant[cus4]" >
+        <label class="form-check-label" for="cus4">Continental</label><br>
+        <input type="checkbox" class="form-check-input" id="cus5" name="restaurant[cus5]" >
+        <label class="form-check-label" for="cus5">Japanese</label><br>
+        <input type="checkbox" class="form-check-input" id="cus6" name="restaurant[cus6]" >
+        <label class="form-check-label" for="cus6">Korean</label>
     </div>
     <div class="form-group">
         <h4>Location</h4>
-        <input type="text" class="form-control" id="location" aria-describedby="location" name="location" required>
+        <input type="text" class="form-control" id="location" aria-describedby="location" name="restaurant[location]" required>
       </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>

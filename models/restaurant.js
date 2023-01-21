@@ -9,12 +9,10 @@ const imageSchema = new Schema({
 const itemSchema = new Schema({
     name : {
         type : String,
-        required : true
     },
 
     price : {
         type : Number,
-        required : true
     },
 
     veg : {
@@ -41,7 +39,7 @@ const itemSchema = new Schema({
 const RestaurantSchema =  new Schema({
     name : {
     type : String,
-    required : true
+    
     },
 
     rating : {
@@ -68,7 +66,6 @@ const RestaurantSchema =  new Schema({
 
     items : {
         type:[itemSchema],
-        required : false
     }, 
 
     itemCount : {
@@ -78,7 +75,7 @@ const RestaurantSchema =  new Schema({
 
     location : {
         type : String,
-        required : true
+
     }
 });
 

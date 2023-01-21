@@ -62,12 +62,12 @@ module.exports.city_name = [
 
 module.exports.area_name = [
     '',
-    'Malleswaram',
-    'Kukatpally',
-    'Indra Nagar',
-    'KK Nagar',
-    'Town',
-    'New Mall',
+    'Trafalgar Square',
+    'Mayfair',
+    'Park Lane',
+    'Whitehall',
+    'Bakerstreet',
+    'Marlborough Street',
     'Town Square',
-    'Marine Drive'
+    'Bond Street'
 ]
