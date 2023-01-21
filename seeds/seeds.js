@@ -17,8 +17,7 @@ mongoose.connection.once("open", () => {
 
 const genRandNum = (range) => (Math.floor(Math.random() * range) + 1)
 
-const shuffled = cusines.sort(() => 0.5 - Math.random());
-const cusiArr = (n) => shuffled.slice(0,n)
+const cusiArr = (n) => cusines.sort(() => 0.5 - Math.random()).slice(0,n)
 
 const seedDB = async() => {
     let veganBool = false
