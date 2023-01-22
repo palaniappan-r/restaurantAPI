@@ -1,28 +1,55 @@
 <% layout ('/layouts/boilerplate') %>
-<h1 class="display-1 text-center"> <%= rest.name %> </h1>
-<h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
-<h6>Items in Menu : <%= rest.itemCount %> </h6>
-<h6> <%= rest.description %> </h6>
-<h6 class="text-muted"> <%= rest.location %> </h6>
-<ul class="list-group">
-    <% for(i of rest.items) {%>
-        <div class="d-inline">
-            <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3></div> 
-                <form action="/restaurants/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete Item </button></form>
-            </li><br>
-        </div>
-    <% } %>
-</ul>
-<img src="<%= rest.image %>" alt="">
+<div class="row">
+    <div class="col-8 offset-1 mb-3">
+        <h1 class="display-1 text-center"> <%= rest.name %> </h1>
+        <h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
+        <h6>Items in Menu : <%= rest.itemCount %> </h6>
+        <h6> <%= rest.description %> </h6>
+        <h6 class="text-muted"> <%= rest.location %> </h6>
+        <ul class="list-group">
+            <% for(i of rest.items) {%>
+                <div class="d-inline">
+                    <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3></div> 
+                        <form action="/restaurants/items/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete Item </button></form>
+                    </li><br>
+                </div>
+            <% } %>
+        </ul>
+        <img src="<%= rest.image %>" alt="">
+        <a href="/restaurants/<%=rest._id %>/update" class="btn btn-info btn-lg btn-block">Edit Details</a><br>
+        <a href="/restaurants/newItem/<%=rest._id %>" class="btn btn-success btn-lg btn-block">Add Item</a><br>
+        <form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
+        <button class="btn btn-danger btn-lg btn-block">Remove Restaurant</button>
+        </form>
+    </div>
 
-<a href="/restaurants/<%=rest._id %>/update" class="btn btn-info btn-lg btn-block">Edit Details</a><br>
-<a href="/restaurants/newItem/<%=rest._id %>" class="btn btn-success btn-lg btn-block">Add Item</a><br>
-<form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
-<button class="btn btn-danger btn-lg btn-block">Remove Restaurant</button>
-</form><br>
+    <div class="col-3"> 
+        <h2>Reviews</h2>
+        <ul class="list-group">
+        <% for(i of rest.reviews) {%>
+            <div class="d-inline mb-3">
+                <li class="list-group-item"> 
+                    Rating : <%=i.rating%>
+                    <p> <%= i.text %> </p> 
+                    <form action="/restaurants/reviews/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete</button></form>
+                </li>
+            </div>
+        <% } %>  
+        </ul>
+        <h2> Add Review to <%=rest.name%></h2><br>
+        <form action="/restaurants/<%=rest._id%>/reviews" method="POST">
+            <div class="form-group">
+              <label for="text" class="form-label"><h5>Review</h5></label>
+              <textarea class="form-control" id="text" aria-describedby="text" name="review[text]" required></textarea><br>
+            <div class="form-group">
+                <label for="rating" class="form-label"><h5>Rating</h5></label>
+                <input type="range" min="0" max="5" class="form-control" id="rating" aria-describedby="rating" name="review[rating]" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
-<form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST"></form>
+</div>
 
-
-
+ 
 

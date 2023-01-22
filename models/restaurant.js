@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Review = require('./review.js')
 
 const imageSchema = new Schema({
     url: String,
@@ -38,14 +39,11 @@ const itemSchema = new Schema({
 
 const RestaurantSchema =  new Schema({
     name : {
-    type : String,
-    
+    type : String
     },
 
     rating : {
-    type : Number,
-    min : 0,
-    max : 5
+    type : Number
     },
 
     description : {
@@ -61,11 +59,11 @@ const RestaurantSchema =  new Schema({
     },
 
     vegan : {
-        type : Boolean,
+        type : Boolean
     },
 
     items : {
-        type:[itemSchema],
+        type:[itemSchema]
     }, 
 
     itemCount : {
@@ -75,8 +73,14 @@ const RestaurantSchema =  new Schema({
 
     location : {
         type : String,
+    },
 
-    }
+    reviews : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : Review
+        }
+    ]
 });
 
 module.exports = mongoose.model('Restaurant' , RestaurantSchema)

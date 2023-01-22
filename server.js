@@ -22,8 +22,6 @@ mongoose.connection.once("open", () => {
 
 const app = express(); 
 
-app.use('/',restaurants)
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.engine('ejs', ejsMate)
@@ -35,15 +33,14 @@ app.listen(3000 , () => {
     console.log("Server Running");
 });
 
+app.use('/',restaurants)
+
 app.all('*' , (req , res , next) => {
     next(new ErrorClass('PAGE NOT FOUND' , 404))
 })
 
 app.use((err , req , res , next) => {
-    console.log("in use")
-    console.log(err)
     const {statusCode = 400 , message = "ERROR"} = err
-    //res.status(status).send(msg)
     res.render('errorPage' , {message , statusCode})
 })
 
