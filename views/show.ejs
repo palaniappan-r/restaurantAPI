@@ -37,7 +37,7 @@
         <% } %>  
         </ul>
         <h2> Add Review to <%=rest.name%></h2><br>
-        <form action="/restaurants/<%=rest._id%>/reviews" method="POST">
+        <form action="/restaurants/reviews/<%=rest._id%>" method="POST">
             <div class="form-group">
               <label for="text" class="form-label"><h5>Review</h5></label>
               <textarea class="form-control" id="text" aria-describedby="text" name="review[text]" required></textarea><br>
