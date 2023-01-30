@@ -1,5 +1,16 @@
 const Restaurant = require('../models/restaurant');
 const catchError = require('../utilities/catchError')
+const ErrorClass = require('../utilities/errorClass')
+const express = require('express')
+const mongoose = require('mongoose')
+const path = require('path')
+const morgan = require('morgan')
+const methodOverride = require('method-override')
+const { urlencoded } = require('express')
+const ejsMate = require('ejs-mate')
+const session = require('express-session')
+const flash = require('connect-flash')
+
 
 exports.indexPage = catchError(async(req, res) => { 
     const rests = await Restaurant.find({});
@@ -17,6 +28,9 @@ exports.showRestaurantInfo = catchError(async(req , res) => {
 })
 
 exports.addNewItem = catchError(async(req , res) => { 
+    if(!req.body.item)
+        throw new ErrorClass('EMPTY REQUEST BODY' , 400)
+
     const {id} = req.params;
     const rest = await Restaurant.findById(id)
     
@@ -43,8 +57,13 @@ exports.newItemForm = catchError(async(req , res) => {
     res.render('new_item',{id,rest})
 })
 
-exports.addNewRestaurant = catchError(async(req , res) => { 
-    const rest = new Restaurant(req.body.restaurant);
+exports.addNewRestaurant = catchError(async(req , res , next) => { 
+    console.log(req.body)
+    if(!req.body.restaurant)
+        return next (new ErrorClass('EMPTY REQUEST BODY' , 404))
+
+    const rest = await Restaurant.create(req.body.restaurant)
+
     if(req.body.cus1 == "on")
         rest.cuisines.push('Indian')
     if(req.body.cus2== "on")
@@ -57,6 +76,7 @@ exports.addNewRestaurant = catchError(async(req , res) => {
         rest.cuisines.push('Japanese')
     if(req.body.cus6 == "on")
         rest.cuisines.push('Korean')
+    
     rest.itemCount = 0
     rest.avgPrice = 0
     await rest.save()
@@ -95,7 +115,7 @@ exports.updateRestaurantDetails = catchError(async(req , res) => {
     rest.itemCount = temp[2]
     rest.save()
     req.flash('success' , 'Successfully Updated ')
-    res.redirect(`/${req.params.id}`)
+    res.redirect(`/restaurants/${rest._id}`)
 })
 
 exports.removeItem = catchError(async(req , res) => { 

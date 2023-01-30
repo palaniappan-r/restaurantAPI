@@ -27,13 +27,13 @@ clientSchema.pre("save" , async function (next) {
     this.password = await bcrypt.hash(this.password , 10)
 })
 
-clientSchema.methods.chkValidatedPassword = async function (sentPassword) {
+clientSchema.methods.chkPassword = async function (sentPassword) {
     return await bcrypt.compare(sentPassword , this.password)
 }
 
 clientSchema.methods.getToken = function () {
-    return jwt.sign({id : this._id} , "secret-key" , {
-        expiresIn : '2d'
+    return jwt.sign({id : this._id} , process.env.JWT_SECRET_KEY , {
+        expiresIn : process.env.JWT_EXPIRY_TIME
     })
 }
 

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 const restaurantAdminSchema = new mongoose.Schema({
     name : {
@@ -26,13 +27,13 @@ restaurantAdminSchema.pre("save" , async function (next) {
     this.password = await bcrypt.hash(this.password , 10)
 })
 
-restaurantSchema.methods.chkValidatedPassword = async function (sentPassword) {
+restaurantAdminSchema.methods.chkPassword = async function (sentPassword) {
     return await bcrypt.compare(sentPassword , this.password)
 }
 
 restaurantAdminSchema.methods.getToken = function () {
-    return jwt.sign({id : this._id} , "secret-key" , {
-        expiresIn : '2d'
+    return jwt.sign({id : this._id} , process.env.JWT_SECRET_KEY , {
+        expiresIn : process.env.JWT_EXPIRY_TIME
     })
 }
 

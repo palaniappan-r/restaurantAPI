@@ -3,22 +3,22 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
+const { clientIsLoggedIn } = require('../middleware/validatePermissions')
+
 
 const {indexPage , newRestaurantForm , showRestaurantInfo , addNewItem , newItemForm , addNewRestaurant , editRestaurantForm , updateRestaurantDetails , removeItem , removeRestaurant} = require("../controllers/restaurantController")
-
-module.exports = router; 
 
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
 
 //GET Route for Index Page
-router.route('/').get(indexPage)
+router.route('/').get(clientIsLoggedIn,indexPage)
 
 //GET Route for new restaurant form
 router.route('/new').get(newRestaurantForm)
 
 //GET Route to display info about a specific restaurant
-router.route('/:id').get(showRestaurantInfo)
+router.route('/:id').get(clientIsLoggedIn,showRestaurantInfo)
 
 //POST Route to add a new item
 router.route('/:id' , validateItem).post(addNewItem)
@@ -42,8 +42,10 @@ router.route('/items/:rest_id/:item_id').delete(removeItem)
 router.route('/:id').delete(removeRestaurant)
 
 router.use((err , req , res , next) => {
+
     const {statusCode = 400 , message = "ERROR"} = err
     res.render('errorPage' , {statusCode , message})
+    
 })
 
 module.exports = router
