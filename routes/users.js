@@ -5,7 +5,7 @@ const methodOverride = require('method-override');
 const { clientIsLoggedIn } = require('../middleware/validatePermissions')
 
 
-const {signupClient , signupRestaurantAdmin, signupClientForm, clientLoginForm , clientLogin, clientLogout, signupRestaurantAdminForm, restaurantAdminLogin, restaurantAdminLoginForm, restaurantAdminLogout, clientDetails} = require('../controllers/userController');
+const {signupClient , signupRestaurantAdmin, signupClientForm, clientLoginForm , clientLogin, logout, signupRestaurantAdminForm, restaurantAdminLogin, restaurantAdminLoginForm, clientDetails} = require('../controllers/userController');
 
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
@@ -23,7 +23,7 @@ router.route('/clientSignup').post(signupClient)
 
 router.route('/clientDetails').get(clientIsLoggedIn,clientDetails)
 
-router.route('/clientLogout').get(clientLogout)
+router.route('/logout').get(logout)
 
 router.route('/restaurantAdminLogin').get(restaurantAdminLoginForm)
 
@@ -32,8 +32,6 @@ router.route('/restaurantAdminLogin').post(restaurantAdminLogin)
 router.route('/restaurantAdminSignup').get(signupRestaurantAdminForm)
 
 router.route('/restaurantAdminSignup').post(signupRestaurantAdmin)
-
-router.route('/restaurantAdminLogout').get(restaurantAdminLogout)
 
 router.use((err , req , res , next) => {
 

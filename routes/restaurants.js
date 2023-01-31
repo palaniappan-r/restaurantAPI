@@ -3,7 +3,7 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
-const { clientIsLoggedIn } = require('../middleware/validatePermissions')
+const { clientIsLoggedIn , res } = require('../middleware/validatePermissions')
 
 
 const {indexPage , newRestaurantForm , showRestaurantInfo , addNewItem , newItemForm , addNewRestaurant , editRestaurantForm , updateRestaurantDetails , removeItem , removeRestaurant} = require("../controllers/restaurantController")

@@ -83,7 +83,7 @@ exports.restaurantAdminLogin = catchError(async (req , res , next) => {
     createCookieToken(restaurantAdmin , res)
 })
 
-exports.clientLogout = catchError(async (req , res , next) => {
+exports.logout = catchError(async (req , res , next) => {
     res.cookie('token' , null , {
         expires : new Date(Date.now()),
         httpOnly : true
