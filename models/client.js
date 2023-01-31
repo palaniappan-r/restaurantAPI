@@ -3,6 +3,17 @@ const validator = require('validator')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
+const orderSchema = new mongoose.Schema({
+    restaurantID : {
+        type : String,
+        required : true
+    },
+    itemID : {
+        type : String,
+        required : true
+    }
+})
+
 const clientSchema = new mongoose.Schema({
     name : {
         type : String,
@@ -17,6 +28,13 @@ const clientSchema = new mongoose.Schema({
     password : {
         type : String,
         required : [true , 'Password is required']
+    },
+    cart :{
+        type : [orderSchema]
+    },
+    cartCount : {
+        type : Number,
+        min : 0
     }
 })
 
