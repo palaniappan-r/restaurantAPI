@@ -23,6 +23,8 @@ exports.signupClient = catchError(async (req, res, next) => {
         return next(new errorClass('Name/Email/Password Missing' , 400))
 
     const newClient = await Client.create(req.body)
+    newClient.cartCount = 0
+    newClient.save()
     createCookieToken(newClient , res)
 })
 
@@ -112,4 +114,14 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
     const userInfo = req.user
     const rests = await Restaurant.find({"restaurantAdminID" : userInfo._id});
     res.render('../views/restaurantAdminHome' , {userInfo , rests})
+})
+
+exports.addItemToCart = catchError(async (req , res) => {
+    const client = await Client.findById(req.user.id);
+    client.cart.push({
+        restaurantID : req.params.rest_id,
+        itemID : req.params.item_id
+    }) 
+    client.cartCount += 1
+    client.save()
 })
