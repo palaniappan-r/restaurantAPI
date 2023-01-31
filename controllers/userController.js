@@ -1,5 +1,6 @@
 const Client = require("../models/client")
 const RestaurantAdmin = require('../models/restaurantAdmin')
+const Restaurant = require('../models/restaurant')
 const errorClass = require("../utilities/errorClass")
 const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
@@ -105,4 +106,10 @@ exports.clientDetails =  catchError(async (req, res , next) => {
          success:true,
          user
      })
+})
+
+exports.restaurantAdminHome = catchError(async(req , res) => {
+    const userInfo = req.user
+    const rests = await Restaurant.find({"restaurantAdminID" : userInfo._id});
+    res.render('../views/restaurantAdminHome' , {userInfo , rests})
 })

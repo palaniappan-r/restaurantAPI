@@ -8,18 +8,21 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
    // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
    const token = req.cookies.token
     if(!token)
-        return next(new errorClass("Login to access site" , 401))
+        return next(new errorClass("Login to Access Site" , 401))
     
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
     req.user = await Client.findById(decoded.id)
-    next()
+    if(req.user)
+        next()
+    else
+        return next(new errorClass("Login as Client to Access Site" , 401))
 })
 
 exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
      if(!token)
-         return next(new errorClass("Login to access site" , 401))
+         return next(new errorClass("Login as Restaurant Admin to Access Site" , 401))
      
      const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
      req.user = await RestaurantAdmin.findById(decoded.id)

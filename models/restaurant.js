@@ -80,7 +80,15 @@ const RestaurantSchema =  new Schema({
             type : Schema.Types.ObjectId,
             ref : Review
         }
-    ]
+    ],
+
+    restaurantAdminID : {
+        type : String
+    },
+
+    restaurantOwner : {
+        type : String
+    }
 });
 
 module.exports = mongoose.model('Restaurant' , RestaurantSchema)

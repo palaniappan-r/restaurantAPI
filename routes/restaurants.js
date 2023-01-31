@@ -3,43 +3,47 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
-const { clientIsLoggedIn , res } = require('../middleware/validatePermissions')
+const { clientIsLoggedIn , restaurantAdminIsLoggedIn } = require('../middleware/validatePermissions')
 
 
-const {indexPage , newRestaurantForm , showRestaurantInfo , addNewItem , newItemForm , addNewRestaurant , editRestaurantForm , updateRestaurantDetails , removeItem , removeRestaurant} = require("../controllers/restaurantController")
+const {indexPage , newRestaurantForm , addNewItem , newItemForm , addNewRestaurant , editRestaurantForm , updateRestaurantDetails , removeItem , removeRestaurant, showRestaurantClientInfo, showRestaurantAdminInfo} = require("../controllers/restaurantController")
 
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
 
 //GET Route for Index Page
-router.route('/').get(clientIsLoggedIn,indexPage)
+router.route('/').get(clientIsLoggedIn , 
+    indexPage)
 
 //GET Route for new restaurant form
-router.route('/new').get(newRestaurantForm)
+router.route('/new').get(restaurantAdminIsLoggedIn , newRestaurantForm)
 
 //GET Route to display info about a specific restaurant
-router.route('/:id').get(clientIsLoggedIn,showRestaurantInfo)
+router.route('/:id').get(clientIsLoggedIn , showRestaurantClientInfo)
+
+//GET Route to display info about a specific restaurant for the owner
+router.route('/admin/:id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
 
 //POST Route to add a new item
-router.route('/:id' , validateItem).post(addNewItem)
+router.route('/:id' , validateItem).post(restaurantAdminIsLoggedIn , addNewItem)
 
 //GET Route for new item form
-router.route('/newItem/:id').get(newItemForm)
+router.route('/newItem/:id').get(restaurantAdminIsLoggedIn , newItemForm)
 
 //POST Route to add a Restaurant
-router.route('/' , validateRestaurant).post(addNewRestaurant)
+router.route('/' , validateRestaurant).post(restaurantAdminIsLoggedIn , addNewRestaurant)
 
 //GET Route for edit restaurant form
-router.route('/:id/update').get(editRestaurantForm)
+router.route('/:id/update').get(restaurantAdminIsLoggedIn , editRestaurantForm)
 
 //PUT Route to update restaurant details
-router.route('/:id' , validateRestaurant).put(updateRestaurantDetails)
+router.route('/:id' , validateRestaurant).put(restaurantAdminIsLoggedIn , updateRestaurantDetails)
 
 //DELETE Route to remove an item
-router.route('/items/:rest_id/:item_id').delete(removeItem)
+router.route('/items/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , removeItem)
 
 //DELETE Route to remove a restaurant
-router.route('/:id').delete(removeRestaurant)
+router.route('/:id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
 
 router.use((err , req , res , next) => {
 

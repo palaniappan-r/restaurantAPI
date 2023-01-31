@@ -2,6 +2,7 @@
 <div class="row">
     <div class="col-8 offset-1 mb-3">
         <h6>ID : <%= rest._id %> </h6>
+        <h6>Admin ID : <%= rest.restaurantAdminID %> </h6>
         <h1 class="display-1 text-center"> <%= rest.name %> </h1>
         <h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
         <h6>Items in Menu : <%= rest.itemCount %> </h6>
@@ -37,17 +38,6 @@
             </div>
         <% } %>  
         </ul>
-        <h2> Add Review to <%=rest.name%></h2><br>
-        <form action="/restaurants/reviews/<%=rest._id%>" method="POST">
-            <div class="form-group">
-              <label for="text" class="form-label"><h5>Review</h5></label>
-              <textarea class="form-control" id="text" aria-describedby="text" name="review[text]" required></textarea><br>
-            <div class="form-group">
-                <label for="rating" class="form-label"><h5>Rating</h5></label>
-                <input type="range" min="0" max="5" class="form-control" id="rating" aria-describedby="rating" name="review[rating]" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
     </div>
 
 </div>

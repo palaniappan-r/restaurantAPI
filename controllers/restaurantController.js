@@ -1,15 +1,6 @@
 const Restaurant = require('../models/restaurant');
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
-const express = require('express')
-const mongoose = require('mongoose')
-const path = require('path')
-const morgan = require('morgan')
-const methodOverride = require('method-override')
-const { urlencoded } = require('express')
-const ejsMate = require('ejs-mate')
-const session = require('express-session')
-const flash = require('connect-flash')
 
 
 exports.indexPage = catchError(async(req, res) => { 
@@ -21,10 +12,16 @@ exports.newRestaurantForm = catchError(async(req , res) => {
     res.render('new');
 })
 
-exports.showRestaurantInfo = catchError(async(req , res) => { 
+exports.showRestaurantClientInfo = catchError(async(req , res) => { 
     const {id} = req.params;
     const rest = await Restaurant.findById(id).populate('reviews');
-    res.render('show',{rest});
+    res.render('show_client',{rest});
+})
+
+exports.showRestaurantAdminInfo = catchError(async(req , res) => { 
+    const {id} = req.params;
+    const rest = await Restaurant.findById(id).populate('reviews');
+    res.render('show_admin',{rest});
 })
 
 exports.addNewItem = catchError(async(req , res) => { 
@@ -79,6 +76,8 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
     
     rest.itemCount = 0
     rest.avgPrice = 0
+    rest.restaurantAdminID = req.user._id
+    rest.restaurantOwner = req.user.name
     await rest.save()
     req.flash('success' , 'Successfully Added a Restaurant ')
     res.redirect(`/restaurants/${rest._id}`)
