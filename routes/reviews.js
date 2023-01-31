@@ -6,6 +6,6 @@ const router = express.Router()
 
 router.route('/:id').post(clientIsLoggedIn,addReview)
 
-router.delete('/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
+router.route('/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
 
 module.exports = router

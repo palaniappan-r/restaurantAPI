@@ -18,5 +18,5 @@ exports.deleteReview = catchError(async(req , res) =>{
     await Review.findByIdAndDelete(review_id)
     const rest = await Restaurant.findById(rest_id)
     rest.save()
-    res.redirect(`/restaurants/${rest._id}`)
+    res.redirect(`/restaurants/admin/${rest._id}`)
 })
