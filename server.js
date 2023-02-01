@@ -31,7 +31,7 @@ const sessionConfig = {
 
 const app = express(); 
 
-//app.use(morgan('tiny'))
+app.use(morgan('tiny'))
 
 app.use(cookieParser())
 app.set('view engine', 'ejs')

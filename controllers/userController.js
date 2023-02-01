@@ -4,7 +4,7 @@ const Restaurant = require('../models/restaurant')
 const errorClass = require("../utilities/errorClass")
 const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
-
+const ErrorClass = require('../utilities/errorClass')
 
 //Maybe merge both into a single fn later
 
@@ -102,12 +102,8 @@ exports.restaurantAdminLogout = catchError(async (req , res , next) => {
 })
 
 exports.clientDetails =  catchError(async (req, res , next) => {
-    const user = await Client.findById(req.user.id);
-
-    res.status(200).json({
-         success:true,
-         user
-     })
+    const userInfo = await Client.findById(req.user.id);
+    res.status(200).render('../views/client_details',{userInfo})
 })
 
 exports.restaurantAdminHome = catchError(async(req , res) => {
@@ -116,12 +112,58 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
     res.render('../views/restaurantAdminHome' , {userInfo , rests})
 })
 
-exports.addItemToCart = catchError(async (req , res) => {
+exports.addItemToCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
-    client.cart.push({
-        restaurantID : req.params.rest_id,
-        itemID : req.params.item_id
-    }) 
-    client.cartCount += 1
-    client.save()
+    const restaurant = await Restaurant.findById(req.params.rest_id)
+    var itemname
+    for(i of restaurant.items){
+        if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
+            itemname = i.name
+        }
+    }
+    if(!(client._id.equals(req.user._id)))
+       return next(new ErrorClass('Client Access Denied',400))
+    else{
+            client.cart.push({
+                restaurantID : req.params.rest_id,
+                itemID : req.params.item_id,
+                restaurantName : restaurant.name,
+                itemName : itemname,
+                quantity : req.body.quantity
+            }) 
+            client.cartCount += 1
+            client.save()
+        }
+})
+
+exports.removeItemFromCart = catchError(async (req , res , next) => {
+    const client = await Client.findById(req.user.id);
+    if(!(client._id.equals(req.user._id)))
+       return next(new ErrorClass('Client Access Denied',400))
+    else{
+        for(i of client.cart){
+            if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
+               console.log(i)
+                i.remove()
+               client.cartCount -= 1
+               client.save()
+            }
+        }
+        return res.redirect(`/user/clientDetails`)
+    }
+})
+
+exports.updateItemCartQuantity = catchError(async (req , res , next) => {
+    const client = await Client.findById(req.user.id);
+    if(!(client._id.equals(req.user._id)))
+       return next(new ErrorClass('Client Access Denied',400))
+    else{
+        for(i of client.cart){
+            if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
+               i.quantity = req.body.new_quantity
+               client.save()
+            }
+        }
+        return res.redirect(`/user/clientDetails`)
+    }
 })

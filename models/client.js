@@ -8,9 +8,28 @@ const orderSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    restaurantName : {
+        type : String,
+    },
     itemID : {
         type : String,
         required : true
+    },
+    itemName : {
+        type : String,
+    },
+    quantity : {
+        type : Number,
+        min : 1,
+    },
+    unitPrice : {
+        type : Number,
+    },
+    totalPrice : {
+        type : Number,
+    },
+    cancelCondition : {
+        type : Boolean
     }
 })
 
@@ -35,6 +54,9 @@ const clientSchema = new mongoose.Schema({
     cartCount : {
         type : Number,
         min : 0
+    },
+    walletAmount : {
+        type : Number
     }
 })
 
@@ -54,5 +76,6 @@ clientSchema.methods.getToken = function () {
         expiresIn : process.env.JWT_EXPIRY_TIME
     })
 }
+
 
 module.exports = mongoose.model("Client" , clientSchema)
