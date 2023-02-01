@@ -1,14 +1,10 @@
 <% layout ('/layouts/boilerplate') %>
-    <h1 class = "text-center">Admin Home</h1>
-
-<div class="col-8 offset-1 mb-4">
+    <h1 class = "text-center">Admin Dashboard</h1>
     <h6>ID : <%= userInfo._id %> </h6>
-    <h5 class="display-6 text-left"> Name : <%= userInfo.name %> </h5>
-    <h5 class="display-6 text-left"> Email : <%= userInfo.email %> </h5>
-    <a href="/restaurants/new" class="btn btn-success btn-lg btn-block">Add Restaurant</a><br>
-</div>
-
-<h1 class="display-1 text-center">Restaurants</h1><br>
+    <h5 class="display-6"> Name : <%= userInfo.name %> </h5>
+    <h5 class="display-6"> Email : <%= userInfo.email %> </h5>
+    <a href="/restaurants/new" class="btn btn-success btn-lg btn-block">Add Restaurant</a><br><br>
+<h1 class="display-5 mb-4">Restaurants</h1>
 <ul>
 <% for(i of rests) { %> 
     <div class="card text-center">

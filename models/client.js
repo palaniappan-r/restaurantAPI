@@ -28,8 +28,9 @@ const orderSchema = new mongoose.Schema({
     totalPrice : {
         type : Number,
     },
-    cancelCondition : {
-        type : Boolean
+    status : {
+        type: String, 
+        enum: ['In Cart', 'Received' , 'Confirmed' , 'Cooking' , 'Done' , 'Cancelled']
     }
 })
 
@@ -52,6 +53,10 @@ const clientSchema = new mongoose.Schema({
         type : [orderSchema]
     },
     cartCount : {
+        type : Number,
+        min : 0
+    },
+    cartTotalPrice : {
         type : Number,
         min : 0
     },

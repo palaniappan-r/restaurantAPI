@@ -6,8 +6,6 @@ const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
 const ErrorClass = require('../utilities/errorClass')
 
-//Maybe merge both into a single fn later
-
 exports.signupClientForm = ((req , res , next) => {
     res.render('../views/new_client.ejs')
 })
@@ -24,6 +22,7 @@ exports.signupClient = catchError(async (req, res, next) => {
 
     const newClient = await Client.create(req.body)
     newClient.cartCount = 0
+    newClient.cartTotalPrice = 0
     newClient.save()
     createCookieToken(newClient , res)
 })
@@ -115,12 +114,14 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
 exports.addItemToCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     const restaurant = await Restaurant.findById(req.params.rest_id)
-    var itemname
+    var item
+
     for(i of restaurant.items){
         if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
-            itemname = i.name
+            item = i
         }
     }
+
     if(!(client._id.equals(req.user._id)))
        return next(new ErrorClass('Client Access Denied',400))
     else{
@@ -128,12 +129,17 @@ exports.addItemToCart = catchError(async (req , res , next) => {
                 restaurantID : req.params.rest_id,
                 itemID : req.params.item_id,
                 restaurantName : restaurant.name,
-                itemName : itemname,
-                quantity : req.body.quantity
+                itemName : item.name,
+                quantity : req.body.quantity,
+                unitPrice : item.price,
+                totalPrice : (item.price * req.body.quantity),
+                status : 'In Cart'
             }) 
+            client.cartTotalPrice += (item.price * req.body.quantity)
             client.cartCount += 1
             client.save()
-        }
+    }
+
 })
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
@@ -143,7 +149,7 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
     else{
         for(i of client.cart){
             if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
-               console.log(i)
+                client.cartTotalPrice -= i.totalPrice
                 i.remove()
                client.cartCount -= 1
                client.save()
@@ -160,7 +166,10 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     else{
         for(i of client.cart){
             if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
+                client.cartTotalPrice -= i.totalPrice
                i.quantity = req.body.new_quantity
+               i.totalPrice = (i.quantity * i.unitPrice)
+               client.cartTotalPrice += i.totalPrice
                client.save()
             }
         }
