@@ -4,7 +4,6 @@ const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const { clientIsLoggedIn , restaurantAdminIsLoggedIn } = require('../middleware/validatePermissions')
 
-
 const {
     signupClient , 
     signupRestaurantAdmin, 
@@ -48,10 +47,8 @@ router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantA
 router.route('/addToCart/:rest_id/:item_id').post(clientIsLoggedIn , addItemToCart)
 
 router.use((err , req , res , next) => {
-
     const {statusCode = 400 , message = "ERROR"} = err
     res.render('errorPage' , {statusCode , message})
-    
 })
 
 module.exports = router 

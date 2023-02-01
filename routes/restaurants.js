@@ -5,15 +5,25 @@ const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
 const { clientIsLoggedIn , restaurantAdminIsLoggedIn } = require('../middleware/validatePermissions')
 
-
-const {indexPage , newRestaurantForm , addNewItem , newItemForm , addNewRestaurant , editRestaurantForm , updateRestaurantDetails , removeItem , removeRestaurant, showRestaurantClientInfo, showRestaurantAdminInfo} = require("../controllers/restaurantController")
+const {
+    indexPage, 
+    newRestaurantForm, 
+    addNewItem, 
+    newItemForm, 
+    addNewRestaurant, 
+    editRestaurantForm, 
+    updateRestaurantDetails, 
+    removeItem, 
+    removeRestaurant,
+    showRestaurantClientInfo, 
+    showRestaurantAdminInfo
+} = require("../controllers/restaurantController")
 
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
 
 //GET Route for Index Page
-router.route('/').get(clientIsLoggedIn , 
-    indexPage)
+router.route('/').get(clientIsLoggedIn , indexPage)
 
 //GET Route for new restaurant form
 router.route('/new').get(restaurantAdminIsLoggedIn , newRestaurantForm)
@@ -46,10 +56,8 @@ router.route('/items/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , remo
 router.route('/:id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
 
 router.use((err , req , res , next) => {
-
     const {statusCode = 400 , message = "ERROR"} = err
     res.render('errorPage' , {statusCode , message})
-    
 })
 
 module.exports = router
