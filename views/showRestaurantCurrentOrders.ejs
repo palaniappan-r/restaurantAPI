@@ -1,0 +1,33 @@
+<% layout ('/layouts/boilerplate') %>
+    <h1 class = "text-center"><%=rest.name %> Current Orders</h1>
+<ul>
+    <% for(i of rest.currentOrders) { %> 
+        <div class="card text-center">
+            <div class="card-header">
+               <h2> <%= i.itemName %> </h2>
+            </div>
+            <div class="d-inline"><br>
+             <h6> Quantity : <%=i.quantity%></h6> 
+             <h6> Current Status : <%=i.status%></h6> 
+            <form action="/user/removeFromCart/?_method=DELETE" method="POST">
+                <button class = "btn btn-outline-danger col-2">
+                    Reject Order
+                </button> 
+            </form><br>
+            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/updateStatus" method="GET">
+                <label for="status">Status</label>
+                <select name="status" id="status">
+                    <option value="Received">Received</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Cooking">Cooking</option>
+                    <option value="Done">Done</option>
+                </select>
+                <input type="submit" value="Submit">
+          </form>
+            <br>
+                <h6>Unit Price : <%=i.unitPrice%></h6>
+                <h6>Total Price : <%=i.totalPrice%></h6>
+        </div>
+    <br>  
+    <% } %>
+</ul> 

@@ -19,6 +19,10 @@ const {
     showRestaurantAdminInfo
 } = require("../controllers/restaurantController")
 
+const {
+    restaurantCurrentOrders, restaurantUpdateOrderStatus
+} = require('../controllers/orderController')
+
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
 
@@ -54,6 +58,10 @@ router.route('/items/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , remo
 
 //DELETE Route to remove a restaurant
 router.route('/:id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
+
+router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaurantCurrentOrders)
+
+router.route('/:rest_id/:order_id/updateStatus').get(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
 
 router.use((err , req , res , next) => {
     const {statusCode = 400 , message = "ERROR"} = err

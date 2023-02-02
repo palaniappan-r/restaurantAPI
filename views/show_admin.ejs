@@ -5,6 +5,10 @@
         <h6>Admin ID : <%= rest.restaurantAdminID %> </h6>
         <h6>Access ID : <%= userid %> </h6>
         <h1 class="display-1 text-center"> <%= rest.name %> </h1>
+        <div class="text-center">
+            <a href="/user/<%=rest._id%>/pastOrders" class="btn btn-outline-info">Past Orders</a>
+            <a href="/restaurants/<%=rest._id%>/currentOrders%>" class="btn btn-outline-primary">Current Orders</a>
+          </div>
         <h5 > Average Price : ₹ <%= Math.ceil(rest.avgPrice) %> </h5>
         <h6>Items in Menu : <%= rest.itemCount %> </h6>
         <h6> <%= rest.description %> </h6>

@@ -88,6 +88,12 @@ exports.placeOrder = catchError(async (req , res , next) => {
     if(!(client._id.equals(req.params.user_id)))
          return next(new ErrorClass('Client Access Denied',400))
     if(client.walletAmount >= client.cartTotalPrice){
+        for(i of client.cart){
+            const order = await Order.findById(i)
+            const rest = await Restaurant.findById(order.restaurantID)
+            rest.currentOrders.push(order)
+            rest.save()
+        }
         client.walletAmount -= client.cartTotalPrice  
         client.cartTotalPrice = 0
         client.cart = []
@@ -96,5 +102,25 @@ exports.placeOrder = catchError(async (req , res , next) => {
     }
     else{
         return next(new ErrorClass('Insufficient Wallet Funds',400))
+    }
+})
+
+exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
+    const rest = await Restaurant.findById(req.params.rest_id).populate('currentOrders')
+    if(!(rest.restaurantAdminID == req.user._id))
+       return next(new ErrorClass('You can only access your own restaurant',400))
+    console.log(rest.currentOrders)
+    res.render('showRestaurantCurrentOrders',{rest})
+})
+
+exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
+    const rest = await Restaurant.findById(req.params.rest_id)
+    if(!(rest.restaurantAdminID == req.user._id))
+       return next(new ErrorClass('You can only access your own restaurant',400))
+    else{
+        const order = await Order.findById(req.params.order_id)
+        order.status = req.query.status
+        order.save()
+        res.redirect(`/restaurants/${rest._id}/currentOrders`)
     }
 })

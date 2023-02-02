@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Order = require('./order.js');
 const Schema = mongoose.Schema;
 const Review = require('./review.js')
 
@@ -88,7 +89,21 @@ const RestaurantSchema =  new Schema({
 
     restaurantOwner : {
         type : String
-    }
+    },
+
+    currentOrders : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : Order
+        }
+    ],
+
+    pastOrders : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : Order
+        }
+    ],
 });
 
 module.exports = mongoose.model('Restaurant' , RestaurantSchema)
