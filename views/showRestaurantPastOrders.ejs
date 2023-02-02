@@ -1,0 +1,18 @@
+<% layout ('/layouts/boilerplate') %>
+    <h1 class = "text-center"><%=rest.name %> Past Orders</h1>
+<ul>
+    <% for(i of rest.pastOrders) { %> 
+        <div class="card text-center">
+            <div class="card-header">
+               <h2> <%= i.itemName %> </h2>
+            </div>
+            <div class="d-inline"><br>
+             <h6> Quantity : <%=i.quantity%></h6> 
+             <h6> Current Status : <%=i.status%></h6> 
+            <br>
+                <h6>Unit Price : <%=i.unitPrice%></h6>
+                <h6>Total Price : <%=i.totalPrice%></h6>
+        </div>
+    <br>  
+    <% } %>
+</ul> 

@@ -3,6 +3,7 @@ const Restaurant = require('../models/restaurant')
 const Order = require('../models/order')
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
+const restaurant = require("../models/restaurant")
 
 exports.addItemToCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
@@ -91,6 +92,8 @@ exports.placeOrder = catchError(async (req , res , next) => {
         for(i of client.cart){
             const order = await Order.findById(i)
             const rest = await Restaurant.findById(order.restaurantID)
+            order.status = 'Received'
+            order.save()
             rest.currentOrders.push(order)
             rest.save()
         }
@@ -105,22 +108,53 @@ exports.placeOrder = catchError(async (req , res , next) => {
     }
 })
 
+exports.restaurantPastOrders = catchError(async (req , res ,next) => {
+    const rest = await Restaurant.findById(req.params.rest_id).populate('pastOrders')
+    if(!(rest.restaurantAdminID == req.user._id))
+       return next(new ErrorClass('You can only access your own restaurant',400))
+    res.render('showRestaurantPastOrders',{rest})
+})
+
 exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id).populate('currentOrders')
     if(!(rest.restaurantAdminID == req.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
-    console.log(rest.currentOrders)
     res.render('showRestaurantCurrentOrders',{rest})
 })
 
 exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
+    const status = req.query.status
     if(!(rest.restaurantAdminID == req.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
     else{
         const order = await Order.findById(req.params.order_id)
-        order.status = req.query.status
+        console.log(status,'------',order.status)
+        if(status == 'Confirmed' && order.status == 'Received' )
+            order.status = status
+        else if(status == 'Cooking' && order.status == 'Confirmed')
+            order.status = status
+        else if(status == 'Done' ){ 
+            order.status = status
+            rest.totalRevenue += order.totalPrice
+            const index = 0
+            for(i of rest.currentOrders){
+                //console.log(rest.currentOrders)
+                //console.log(order._id)
+                console.log('------------------')
+                if(i._id.equals(order._id)){
+                    console.log('found')
+                    console.log(i)
+                    rest.currentOrders.splice(index,1)
+                    rest.pastOrders.push(i)
+                    break
+                }
+            index++
+            }
+            rest.save()
+        }
         order.save()
         res.redirect(`/restaurants/${rest._id}/currentOrders`)
     }
 })
+

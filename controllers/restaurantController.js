@@ -84,6 +84,7 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
     rest.avgPrice = 0
     rest.restaurantAdminID = req.user._id
     rest.restaurantOwner = req.user.name
+    rest.totalRevenue = 0
     await rest.save()
     req.flash('success' , 'Successfully Added a Restaurant ')
     return res.redirect(`/restaurants/${rest._id}`)

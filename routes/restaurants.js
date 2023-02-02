@@ -20,7 +20,7 @@ const {
 } = require("../controllers/restaurantController")
 
 const {
-    restaurantCurrentOrders, restaurantUpdateOrderStatus
+    restaurantCurrentOrders, restaurantUpdateOrderStatus, restaurantPastOrders
 } = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));
@@ -60,6 +60,8 @@ router.route('/items/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , remo
 router.route('/:id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
 
 router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaurantCurrentOrders)
+
+router.route('/:rest_id/pastOrders').get(restaurantAdminIsLoggedIn , restaurantPastOrders)
 
 router.route('/:rest_id/:order_id/updateStatus').get(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
 

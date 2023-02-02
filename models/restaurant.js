@@ -104,6 +104,10 @@ const RestaurantSchema =  new Schema({
             ref : Order
         }
     ],
+
+    totalRevenue : {
+        type : Number
+    }
 });
 
 module.exports = mongoose.model('Restaurant' , RestaurantSchema)
