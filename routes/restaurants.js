@@ -20,7 +20,7 @@ const {
 } = require("../controllers/restaurantController")
 
 const {
-    restaurantCurrentOrders, restaurantUpdateOrderStatus, restaurantPastOrders
+    restaurantCurrentOrders, restaurantUpdateOrderStatus, restaurantPastOrders, restaurantCancelOrder
 } = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));
@@ -63,7 +63,9 @@ router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaura
 
 router.route('/:rest_id/pastOrders').get(restaurantAdminIsLoggedIn , restaurantPastOrders)
 
-router.route('/:rest_id/:order_id/updateStatus').get(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
+router.route('/:rest_id/:order_id/').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
+
+router.route('/:rest_id/:order_id/').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
 
 router.use((err , req , res , next) => {
     const {statusCode = 400 , message = "ERROR"} = err

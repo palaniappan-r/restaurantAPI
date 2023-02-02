@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 
 const orderSchema = new mongoose.Schema({
+    clientID : {
+
+    },
     restaurantID : {
         type : String,
         required : true

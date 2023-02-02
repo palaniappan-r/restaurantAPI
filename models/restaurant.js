@@ -106,7 +106,8 @@ const RestaurantSchema =  new Schema({
     ],
 
     totalRevenue : {
-        type : Number
+        type : Number,
+        min : 0
     }
 });
 

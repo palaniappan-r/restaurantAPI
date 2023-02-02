@@ -1,5 +1,6 @@
 <% layout ('/layouts/boilerplate') %>
     <h1 class = "text-center"><%=rest.name %> Current Orders</h1>
+    <h2 class = "text-center">Total Revenue : <%=rest.totalRevenue %></h1>
 <ul>
     <% for(i of rest.currentOrders) { %> 
         <div class="card text-center">
@@ -9,12 +10,12 @@
             <div class="d-inline"><br>
              <h6> Quantity : <%=i.quantity%></h6> 
              <h6> Current Status : <%=i.status%></h6> 
-            <form action="/user/removeFromCart/?_method=DELETE" method="POST">
+            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/?_method=DELETE" method="POST">
                 <button class = "btn btn-outline-danger col-2">
                     Reject Order
                 </button> 
             </form><br>
-            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/updateStatus" method="GET">
+            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/?_method=PUT" method="POST">
                 <label for="status">Status</label>
                 <select name="status" id="status">
                     <option value="Received">Received</option>
