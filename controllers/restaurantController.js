@@ -157,6 +157,6 @@ exports.removeRestaurant = catchError(async(req , res) => {
     const rest = await Restaurant.findById(req.params.id)
     if(!(rest.restaurantAdminID == req.user.id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
-    await Restaurant.findByIdAndDelete(req.params.id , req.body)
+    await Restaurant.findByIdAndDelete(req.params.id)
     res.redirect(`http://127.0.0.1:3000/restaurants/`)
 })

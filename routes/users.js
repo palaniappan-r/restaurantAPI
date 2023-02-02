@@ -16,12 +16,15 @@ const {
     restaurantAdminLoginForm, 
     clientDetails, 
     restaurantAdminHome,
+    addFundsToWallet,
+} = require('../controllers/userController');
+
+const {
     addItemToCart,
     removeItemFromCart,
     updateItemCartQuantity,
-    addFundsToWallet,
     placeOrder
-} = require('../controllers/userController');
+} = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));
 router.use(methodOverride('_method'));
@@ -50,9 +53,9 @@ router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantA
 
 router.route('/addToCart/:user_id/:rest_id/:item_id').post(clientIsLoggedIn,addItemToCart)
 
-router.route('/removeFromCart/:user_id/:rest_id/:item_id').delete(clientIsLoggedIn,removeItemFromCart)
+router.route('/removeFromCart/:user_id/:order_id').delete(clientIsLoggedIn,removeItemFromCart)
 
-router.route('/updateCartQuantity/:user_id/:rest_id/:item_id').put(clientIsLoggedIn , updateItemCartQuantity)
+router.route('/updateCartQuantity/:user_id/:order_id').put(clientIsLoggedIn , updateItemCartQuantity)
 
 router.route('/addFundsToWallet/:user_id').post(clientIsLoggedIn,addFundsToWallet)
 

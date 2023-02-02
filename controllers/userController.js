@@ -1,6 +1,7 @@
 const Client = require("../models/client")
 const RestaurantAdmin = require('../models/restaurantAdmin')
 const Restaurant = require('../models/restaurant')
+const Order = require('../models/order')
 const errorClass = require("../utilities/errorClass")
 const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
@@ -102,7 +103,7 @@ exports.restaurantAdminLogout = catchError(async (req , res , next) => {
 })
 
 exports.clientDetails =  catchError(async (req, res , next) => {
-    const userInfo = await Client.findById(req.user.id);
+    const userInfo = await Client.findById(req.user.id).populate('cart');
     res.status(200).render('../views/client_details',{userInfo})
 })
 
@@ -110,71 +111,6 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
     const userInfo = req.user
     const rests = await Restaurant.find({"restaurantAdminID" : userInfo._id});
     res.render('../views/restaurantAdminHome' , {userInfo , rests})
-})
-
-exports.addItemToCart = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
-    const restaurant = await Restaurant.findById(req.params.rest_id)
-    var item
-
-    for(i of restaurant.items){
-        if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
-            item = i
-        }
-    }
-
-    if(!(client._id.equals(req.params.user_id)))
-       return next(new ErrorClass('Client Access Denied',400))
-    else{
-            client.cart.push({
-                restaurantID : req.params.rest_id,
-                itemID : req.params.item_id,
-                restaurantName : restaurant.name,
-                itemName : item.name,
-                quantity : req.body.quantity,
-                unitPrice : item.price,
-                totalPrice : (item.price * req.body.quantity),
-            }) 
-            client.cartTotalPrice += (item.price * req.body.quantity)
-            client.cartCount += 1
-            client.save()
-    }
-
-})
-
-exports.removeItemFromCart = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
-    if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('Client Access Denied',400))
-    else{
-        for(i of client.cart){
-            if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
-                client.cartTotalPrice -= i.totalPrice
-                i.remove()
-               client.cartCount -= 1
-               client.save()
-            }
-        }
-        return res.redirect(`/user/clientDetails`)
-    }
-})
-
-exports.updateItemCartQuantity = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
-    if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('Client Access Denied',400))
-    else{
-        for(i of client.cart){
-            if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
-                client.cartTotalPrice -= i.totalPrice
-               i.quantity = req.body.new_quantity
-               i.totalPrice = (i.quantity * i.unitPrice)
-               client.cartTotalPrice += i.totalPrice
-               client.save()
-            }
-        }
-        return res.redirect(`/user/clientDetails`)
-    }
 })
 
 exports.addFundsToWallet = catchError(async (req , res , next) => {
@@ -185,20 +121,3 @@ exports.addFundsToWallet = catchError(async (req , res , next) => {
     client.save()
     return res.redirect('/user/clientDetails')
 }) 
-
-exports.placeOrder = catchError(async (req , res , next) => {
-    //res.send('he')
-    const client = await Client.findById(req.user.id);
-    if(!(client._id.equals(req.params.user_id)))
-         return next(new ErrorClass('Client Access Denied',400))
-    if(client.walletAmount >= client.cartTotalPrice){
-        client.walletAmount -= client.cartTotalPrice  
-        client.cartTotalPrice = 0
-        client.cart = []
-        client.save()
-        return res.redirect('/user/clientDetails') 
-    }
-    else{
-        return next(new ErrorClass('Insufficient Wallet Funds',400))
-    }
-})
