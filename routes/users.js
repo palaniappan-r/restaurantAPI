@@ -18,7 +18,9 @@ const {
     restaurantAdminHome,
     addItemToCart,
     removeItemFromCart,
-    updateItemCartQuantity
+    updateItemCartQuantity,
+    addFundsToWallet,
+    placeOrder
 } = require('../controllers/userController');
 
 router.use(urlencoded({ extended: true }));
@@ -46,11 +48,15 @@ router.route('/restaurantAdminSignup').post(signupRestaurantAdmin)
 
 router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantAdminHome)
 
-router.route('/addToCart/:rest_id/:item_id').post(clientIsLoggedIn,addItemToCart)
+router.route('/addToCart/:user_id/:rest_id/:item_id').post(clientIsLoggedIn,addItemToCart)
 
-router.route('/removeFromCart/:rest_id/:item_id').delete(clientIsLoggedIn,removeItemFromCart)
+router.route('/removeFromCart/:user_id/:rest_id/:item_id').delete(clientIsLoggedIn,removeItemFromCart)
 
-router.route('/updateCartQuantity/:rest_id/:item_id').put(clientIsLoggedIn , updateItemCartQuantity)
+router.route('/updateCartQuantity/:user_id/:rest_id/:item_id').put(clientIsLoggedIn , updateItemCartQuantity)
+
+router.route('/addFundsToWallet/:user_id').post(clientIsLoggedIn,addFundsToWallet)
+
+router.route('/placeOrder/:user_id').get(clientIsLoggedIn , placeOrder)
 
 router.use((err , req , res , next) => {
     const {statusCode = 400 , message = "ERROR"} = err

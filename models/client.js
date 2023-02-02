@@ -28,10 +28,6 @@ const orderSchema = new mongoose.Schema({
     totalPrice : {
         type : Number,
     },
-    status : {
-        type: String, 
-        enum: ['In Cart', 'Received' , 'Confirmed' , 'Cooking' , 'Done' , 'Cancelled']
-    }
 })
 
 const clientSchema = new mongoose.Schema({
@@ -61,7 +57,8 @@ const clientSchema = new mongoose.Schema({
         min : 0
     },
     walletAmount : {
-        type : Number
+        type : Number,
+        min : 0
     }
 })
 

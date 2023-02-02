@@ -7,7 +7,22 @@
     <h5 class="display-6 text-left"> Email : <%= userInfo.email %> </h5>
 </div>
 
-<h2 class = "text-center">Cart Total : <%= userInfo.cartTotalPrice %> </h1>
+<div class="text-right">
+    <h5> Wallet Balance : <%= userInfo.walletAmount %> </h5>
+    <form action="/user/addFundsToWallet/<%=userInfo._id%>" method="POST"> 
+        Add Funds : <input class="col-1 mb-3" type="number" class="form-control" id="addFunds" aria-describedby="addFunds" name="addFunds"% value=10 required>
+        <button class = "btn btn-outline-info col-1">Add</button><br>
+    </form>
+</div>
+
+<h2 class = "text-center">Cart Total : <%= userInfo.cartTotalPrice %> </h2>
+<form action="/user/placeOrder/<%=userInfo._id%>" method="GET">
+    <h2 class = "text-center">
+        <button class = "btn btn-outline-success col-2">
+            Place Order
+        </button> 
+    </h2>
+</form>
 
 <ul>
     <% for(i of userInfo.cart) { %> 
@@ -18,23 +33,15 @@
             <div class="d-inline">
                 <li class="list-group-item"> <h2> <%=i.itemName%></h2> 
             <div class="text-right">
-            <form action="/user/updateCartQuantity/<%=i.restaurantID %>/<%=i.itemID%>/?_method=PUT" method="POST"> 
+            <form action="/user/updateCartQuantity/<%=userInfo._id%>/<%=i.restaurantID %>/<%=i.itemID%>/?_method=PUT" method="POST"> 
                     Quantity : <input class="col-1 mb-3" type="number" class="form-control" id="new_quantity" aria-describedby="new_quantity" name="new_quantity" value="<%=`${i.quantity}`%>" required>
-                    <button class = "btn btn-outline-warning col-1">
-                        Update
-                    </button>
-                    <br>
-                    <button class = "btn btn-outline-danger col-2">
-                        Remove From Cart
-                    </button>
+                    <button class = "btn btn-outline-warning col-1">Update</button><br>
             </form>
-            </div>
-            <form action="/user/removeFromCart/<%=i.restaurantID %>/<%=i.itemID%>/?_method=DELETE" method="POST"> 
-                <div class="text-left">
-                    <h5> Status
-                    <span class="badge badge-info col-2 mb-3"> <%= i.status  %> 
-                    </h5> </span><br>
-                </div>
+             </div>
+            <form action="/user/removeFromCart/<%=userInfo._id%>/<%=i.restaurantID %>/<%=i.itemID%>/?_method=DELETE" method="POST">
+                <button class = "btn btn-outline-danger col-2">
+                    Remove From Cart
+                </button> 
             </form>
             <br>
                 <h6>Unit Price : <%=i.unitPrice%></h6>

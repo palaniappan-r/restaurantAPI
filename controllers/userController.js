@@ -23,6 +23,7 @@ exports.signupClient = catchError(async (req, res, next) => {
     const newClient = await Client.create(req.body)
     newClient.cartCount = 0
     newClient.cartTotalPrice = 0
+    newClient.walletAmount = 0
     newClient.save()
     createCookieToken(newClient , res)
 })
@@ -122,7 +123,7 @@ exports.addItemToCart = catchError(async (req , res , next) => {
         }
     }
 
-    if(!(client._id.equals(req.user._id)))
+    if(!(client._id.equals(req.params.user_id)))
        return next(new ErrorClass('Client Access Denied',400))
     else{
             client.cart.push({
@@ -133,7 +134,6 @@ exports.addItemToCart = catchError(async (req , res , next) => {
                 quantity : req.body.quantity,
                 unitPrice : item.price,
                 totalPrice : (item.price * req.body.quantity),
-                status : 'In Cart'
             }) 
             client.cartTotalPrice += (item.price * req.body.quantity)
             client.cartCount += 1
@@ -144,8 +144,8 @@ exports.addItemToCart = catchError(async (req , res , next) => {
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
-    if(!(client._id.equals(req.user._id)))
-       return next(new ErrorClass('Client Access Denied',400))
+    if(!(client._id.equals(req.params.user_id)))
+        return next(new ErrorClass('Client Access Denied',400))
     else{
         for(i of client.cart){
             if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
@@ -161,8 +161,8 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
-    if(!(client._id.equals(req.user._id)))
-       return next(new ErrorClass('Client Access Denied',400))
+    if(!(client._id.equals(req.params.user_id)))
+        return next(new ErrorClass('Client Access Denied',400))
     else{
         for(i of client.cart){
             if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
@@ -174,5 +174,31 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
             }
         }
         return res.redirect(`/user/clientDetails`)
+    }
+})
+
+exports.addFundsToWallet = catchError(async (req , res , next) => {
+    const client = await Client.findById(req.user.id);
+    if(!(client._id.equals(req.params.user_id)))
+         return next(new ErrorClass('Client Access Denied',400))
+    client.walletAmount += parseInt(req.body.addFunds)
+    client.save()
+    return res.redirect('/user/clientDetails')
+}) 
+
+exports.placeOrder = catchError(async (req , res , next) => {
+    //res.send('he')
+    const client = await Client.findById(req.user.id);
+    if(!(client._id.equals(req.params.user_id)))
+         return next(new ErrorClass('Client Access Denied',400))
+    if(client.walletAmount >= client.cartTotalPrice){
+        client.walletAmount -= client.cartTotalPrice  
+        client.cartTotalPrice = 0
+        client.cart = []
+        client.save()
+        return res.redirect('/user/clientDetails') 
+    }
+    else{
+        return next(new ErrorClass('Insufficient Wallet Funds',400))
     }
 })

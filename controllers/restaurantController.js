@@ -1,7 +1,7 @@
 const Restaurant = require('../models/restaurant');
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
-
+const Client = require("../models/client")
 
 exports.indexPage = catchError(async(req, res) => { 
     const rests = await Restaurant.find({});
@@ -15,7 +15,8 @@ exports.newRestaurantForm = catchError(async(req , res) => {
 exports.showRestaurantClientInfo = catchError(async(req , res) => { 
     const {id} = req.params;
     const rest = await Restaurant.findById(id).populate('reviews');
-    res.render('show_client',{rest});
+    const clientid = (req.user.id);
+    res.render('show_client',{rest,clientid});
 })
 
 exports.showRestaurantAdminInfo = catchError(async(req , res , next) => { 
