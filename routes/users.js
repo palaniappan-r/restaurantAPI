@@ -37,7 +37,7 @@ router.route('/clientSignup').get(signupClientForm)
 
 router.route('/clientSignup').post(signupClient)
 
-router.route('/clientDetails').get(clientIsLoggedIn,clientDetails)
+router.route('/clientDetails').get(clientIsLoggedIn , clientDetails)
 
 router.route('/logout').get(logout)
 
@@ -51,13 +51,13 @@ router.route('/restaurantAdminSignup').post(signupRestaurantAdmin)
 
 router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantAdminHome)
 
-router.route('/addToCart/:user_id/:rest_id/:item_id').post(clientIsLoggedIn,addItemToCart)
+router.route('/addToCart/:user_id/:rest_id/:item_id').post(clientIsLoggedIn , addItemToCart)
 
-router.route('/removeFromCart/:user_id/:order_id').delete(clientIsLoggedIn,removeItemFromCart)
+router.route('/removeFromCart/:user_id/:order_id').delete(clientIsLoggedIn , removeItemFromCart)
 
 router.route('/updateCartQuantity/:user_id/:order_id').put(clientIsLoggedIn , updateItemCartQuantity)
 
-router.route('/addFundsToWallet/:user_id').post(clientIsLoggedIn,addFundsToWallet)
+router.route('/addFundsToWallet/:user_id').post(clientIsLoggedIn , addFundsToWallet)
 
 router.route('/placeOrder/:user_id').get(clientIsLoggedIn , placeOrder)
 

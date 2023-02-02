@@ -116,7 +116,7 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
 exports.addFundsToWallet = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     if(!(client._id.equals(req.params.user_id)))
-         return next(new ErrorClass('Client Access Denied',400))
+         return next(new ErrorClass('You can only add funds to your own wallet',400))
     client.walletAmount += parseInt(req.body.addFunds)
     client.save()
     return res.redirect('/user/clientDetails')

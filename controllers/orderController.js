@@ -17,7 +17,7 @@ exports.addItemToCart = catchError(async (req , res , next) => {
     }
 
     if(!(client._id.equals(req.params.user_id)))
-       return next(new ErrorClass('Client Access Denied',400))
+       return next(new ErrorClass('You can only add items to your cart',400))
     else{
             const newOrder = await Order.create({
                 clientID : client._id,
@@ -42,7 +42,7 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     var order
     if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('Client Access Denied',400))
+        return next(new ErrorClass('You can only remove items from your cart',400))
     else{
         const index = 0
         for(i of client.cart){
@@ -65,7 +65,7 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     var order
     if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('Client Access Denied',400))
+        return next(new ErrorClass('You can only update items in your cart',400))
     else{
         for(i of client.cart){
             if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
@@ -86,7 +86,7 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
 exports.placeOrder = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     if(!(client._id.equals(req.params.user_id)))
-         return next(new ErrorClass('Client Access Denied',400))
+         return next(new ErrorClass('You can only place orders in your cart',400))
     if(client.walletAmount >= client.cartTotalPrice){
         for(i of client.cart){
             const order = await Order.findById(i)
