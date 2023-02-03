@@ -107,6 +107,13 @@ exports.clientDetails =  catchError(async (req, res , next) => {
     res.status(200).render('../views/client_details',{userInfo})
 })
 
+exports.clientCurrentOrders = catchError(async (req, res , next) => {
+    const query = {'clientID' : req.user.id}
+    const orders = await Order.find(query)
+    console.log(orders)
+    res.render('../views/clientCurrentOrders' , {orders})
+})
+
 exports.restaurantAdminHome = catchError(async(req , res) => {
     const userInfo = req.user
     const rests = await Restaurant.find({"restaurantAdminID" : userInfo._id});

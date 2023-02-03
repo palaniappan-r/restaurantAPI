@@ -3,7 +3,10 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
-const { clientIsLoggedIn , restaurantAdminIsLoggedIn } = require('../middleware/validatePermissions')
+const { 
+    clientIsLoggedIn, 
+    restaurantAdminIsLoggedIn 
+} = require('../middleware/validatePermissions')
 
 const {
     indexPage, 
@@ -20,7 +23,10 @@ const {
 } = require("../controllers/restaurantController")
 
 const {
-    restaurantCurrentOrders, restaurantUpdateOrderStatus, restaurantPastOrders, restaurantCancelOrder
+    restaurantCurrentOrders, 
+    restaurantUpdateOrderStatus, 
+    restaurantPastOrders, 
+    restaurantCancelOrder
 } = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));

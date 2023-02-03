@@ -1,7 +1,6 @@
 const Restaurant = require('../models/restaurant');
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
-const Client = require("../models/client")
 
 exports.indexPage = catchError(async(req, res) => { 
     const rests = await Restaurant.find({});
@@ -23,7 +22,7 @@ exports.showRestaurantAdminInfo = catchError(async(req , res , next) => {
     const {id} = req.params;
     const rest = await Restaurant.findById(id).populate('reviews');
     const userid = req.user._id
-    if(!(rest.restaurantAdminID == req.user._id))
+    if((rest.restaurantAdminID != req.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
     else
         return res.render('show_admin',{rest,userid});
@@ -35,7 +34,7 @@ exports.addNewItem = catchError(async(req , res) => {
 
     const {id} = req.params;
     const rest = await Restaurant.findById(id)
-    if(!(rest.restaurantAdminID == req.user._id))
+    if((rest.restaurantAdminID != req.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     rest.itemCount += 1
@@ -93,14 +92,14 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
 exports.editRestaurantForm = catchError(async(req , res) => { 
     const {id} = req.params;
     const rest = await Restaurant.findById(id);
-    temp = [rest.items , rest.avgPrice , rest.itemCount]
+    let temp = [rest.items , rest.avgPrice , rest.itemCount]
     res.render('update',{rest});
 })
 
 exports.updateRestaurantDetails = catchError(async(req , res) => { 
     await Restaurant.findByIdAndUpdate(req.params.id , req.body.restaurant)
     const rest = await Restaurant.findById(req.params.id)
-    if(!(rest.restaurantAdminID == req.user._id))
+    if((rest.restaurantAdminID != req.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     rest.cuisines = []
@@ -130,10 +129,10 @@ exports.removeItem = catchError(async(req , res) => {
     const rest_id = req.params.rest_id
     const item_id = req.params.item_id
     const rest = await Restaurant.findById(rest_id)
-    if(!(rest.restaurantAdminID == req.user._id))
+    if(rest.restaurantAdminID != req.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
 
-    for(i of rest.items){
+    for(let i of rest.items){
         if(JSON.stringify(i._id) == JSON.stringify(item_id)){
             i.remove()
             rest.itemCount -= 1
@@ -142,7 +141,7 @@ exports.removeItem = catchError(async(req , res) => {
 
     if(rest.itemCount != 0){
         let avgP = 0
-        for(i of rest.items)
+        for(let i of rest.items)
             avgP += i.price
         rest.avgPrice = (avgP/rest.itemCount)
     }
@@ -156,7 +155,7 @@ exports.removeItem = catchError(async(req , res) => {
 
 exports.removeRestaurant = catchError(async(req , res) => {
     const rest = await Restaurant.findById(req.params.id)
-    if(!(rest.restaurantAdminID == req.user.id))
+    if((rest.restaurantAdminID != req.user.id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
     await Restaurant.findByIdAndDelete(req.params.id)
     res.redirect(`http://127.0.0.1:3000/restaurants/`)

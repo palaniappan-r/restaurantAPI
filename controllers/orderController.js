@@ -8,9 +8,9 @@ const User = require("../models/client")
 exports.addItemToCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
     const restaurant = await Restaurant.findById(req.params.rest_id)
-    var item
+    let item
 
-    for(i of restaurant.items){
+    for(let i of restaurant.items){
         if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
             item = i
         }
@@ -40,12 +40,12 @@ exports.addItemToCart = catchError(async (req , res , next) => {
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
-    var order
+    let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only remove items from your cart',400))
     else{
-        const index = 0
-        for(i of client.cart){
+        let index = 0
+        for(let i of client.cart){
             if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
                 order = await Order.findById(i)
                 client.cartCount -= 1
@@ -63,11 +63,11 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     const client = await Client.findById(req.user.id);
-    var order
+    let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only update items in your cart',400))
     else{
-        for(i of client.cart){
+        for(let i of client.cart){
             if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
                 order = await Order.findById(i)
                 client.cartTotalPrice -= order.totalPrice
@@ -88,7 +88,7 @@ exports.placeOrder = catchError(async (req , res , next) => {
     if(!(client._id.equals(req.params.user_id)))
          return next(new ErrorClass('You can only place orders in your cart',400))
     if(client.walletAmount >= client.cartTotalPrice){
-        for(i of client.cart){
+        for(let i of client.cart){
             const order = await Order.findById(i)
             const rest = await Restaurant.findById(order.restaurantID)
             order.status = 'Received'
@@ -109,14 +109,14 @@ exports.placeOrder = catchError(async (req , res , next) => {
 
 exports.restaurantPastOrders = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id).populate('pastOrders')
-    if(!(rest.restaurantAdminID == req.user._id))
+    if(rest.restaurantAdminID != req.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     res.render('showRestaurantPastOrders',{rest})
 })
 
 exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id).populate('currentOrders')
-    if(!(rest.restaurantAdminID == req.user._id))
+    if(rest.restaurantAdminID != req.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     res.render('showRestaurantCurrentOrders',{rest})
 })
@@ -124,7 +124,7 @@ exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
 exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
     const status = req.body.status
-    if(!(rest.restaurantAdminID == req.user._id))
+    if(rest.restaurantAdminID != req.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     else{
         const order = await Order.findById(req.params.order_id)
@@ -136,8 +136,8 @@ exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
             order.status = status
         else if(status == 'Done' && order.status == 'Cooking' ){ 
             order.status = status
-            const index = 0
-            for(i of rest.currentOrders){
+            let index = 0
+            for(let i of rest.currentOrders){
                 if(i._id.equals(order._id)){
                     rest.currentOrders.splice(index,1)
                     rest.pastOrders.push(i)
@@ -157,7 +157,7 @@ exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
 
 exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
-    if(!(rest.restaurantAdminID == req.user._id))
+    if(rest.restaurantAdminID != req.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     else{
         const order = await Order.findById(req.params.order_id)
@@ -165,10 +165,9 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
             rest.totalRevenue -= order.totalPrice
         const user = await User.findById(order.clientID)
         user.walletAmount += order.totalPrice
-        console.log(user)
         user.save()
-        const index = 0
-        for(i of rest.currentOrders){
+        let index = 0
+        for(let i of rest.currentOrders){
             if(i._id.equals(order._id)){
                 rest.currentOrders.splice(index,1)
                 rest.pastOrders.push(i)
@@ -180,6 +179,37 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
         order.save()
         rest.save()
         res.redirect(`/restaurants/${rest._id}/currentOrders`)
+    }
+})
+
+exports.clientCancelOrder = catchError(async (req , res , next) => {
+    //console.log(req.params)
+    const client = await Client.findById(req.user.id);
+    const order = await Order.findById(req.params.order_id)
+    if(!(client._id.equals(req.params.user_id)))
+        return next(new ErrorClass('You can only update items in your cart',400))
+    else{
+        const rest = await Restaurant.findById(order.restaurantID)
+        if(order.status == 'Received' || order.status == 'Confirmed'){
+            const user = await User.findById(order.clientID)
+            user.walletAmount += order.totalPrice
+            user.save()
+            let index = 0
+            for(let i of rest.currentOrders){
+                if(i._id.equals(order._id)){
+                    rest.currentOrders.splice(index,1)
+                    rest.pastOrders.push(i)
+                    break
+                }
+                index++
+            }
+            order.status = 'Cancelled'
+            order.save()
+            rest.save()
+            res.redirect(`/user/currentOrders`)
+        }
+        else
+            return next(new ErrorClass('You cant cancel the order now',400))
     }
 })
 

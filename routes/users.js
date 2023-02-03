@@ -17,13 +17,15 @@ const {
     clientDetails, 
     restaurantAdminHome,
     addFundsToWallet,
+    clientCurrentOrders,
 } = require('../controllers/userController');
 
 const {
     addItemToCart,
     removeItemFromCart,
     updateItemCartQuantity,
-    placeOrder
+    placeOrder,
+    clientCancelOrder
 } = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));
@@ -38,6 +40,10 @@ router.route('/clientSignup').get(signupClientForm)
 router.route('/clientSignup').post(signupClient)
 
 router.route('/clientDetails').get(clientIsLoggedIn , clientDetails)
+
+router.route('/currentOrders').get(clientIsLoggedIn , clientCurrentOrders)
+
+router.route('/cancelOrder/:user_id/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
 
 router.route('/logout').get(logout)
 
