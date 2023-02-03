@@ -209,7 +209,7 @@ exports.clientCancelOrder = catchError(async (req , res , next) => {
             res.redirect(`/user/currentOrders`)
         }
         else
-            return next(new ErrorClass('You cant cancel the order now',400))
+            return next(new ErrorClass('You cannot cancel the order now',400))
     }
 })
 
