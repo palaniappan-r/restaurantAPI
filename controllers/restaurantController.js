@@ -14,15 +14,15 @@ exports.newRestaurantForm = catchError(async(req , res) => {
 exports.showRestaurantClientInfo = catchError(async(req , res) => { 
     const {id} = req.params;
     const rest = await Restaurant.findById(id).populate('reviews');
-    const clientid = (req.user.id);
+    const clientid = (req.session.user.id);
     res.render('show_client',{rest,clientid});
 })
 
 exports.showRestaurantAdminInfo = catchError(async(req , res , next) => { 
     const {id} = req.params;
     const rest = await Restaurant.findById(id).populate('reviews');
-    const userid = req.user._id
-    if((rest.restaurantAdminID != req.user._id))
+    const userid = req.session.user._id
+    if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
     else
         return res.render('show_admin',{rest,userid});
@@ -34,7 +34,7 @@ exports.addNewItem = catchError(async(req , res) => {
 
     const {id} = req.params;
     const rest = await Restaurant.findById(id)
-    if((rest.restaurantAdminID != req.user._id))
+    if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     rest.itemCount += 1
@@ -50,7 +50,7 @@ exports.addNewItem = catchError(async(req , res) => {
     rest.avgPrice = (avgP/rest.itemCount)
 
     await rest.save()
-    req.flash('success' , 'Successfully Added an Item')
+   // req.flash('success' , 'Successfully Added an Item')
     return res.redirect(`/restaurants/${id}`)
 })
 
@@ -81,11 +81,11 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
     
     rest.itemCount = 0
     rest.avgPrice = 0
-    rest.restaurantAdminID = req.user._id
-    rest.restaurantOwner = req.user.name
+    rest.restaurantAdminID = req.session.user._id
+    rest.restaurantOwner = req.session.user.name
     rest.totalRevenue = 0
     await rest.save()
-    req.flash('success' , 'Successfully Added a Restaurant ')
+    //req.flash('success' , 'Successfully Added a Restaurant ')
     return res.redirect(`/restaurants/${rest._id}`)
 })
 
@@ -99,7 +99,7 @@ exports.editRestaurantForm = catchError(async(req , res) => {
 exports.updateRestaurantDetails = catchError(async(req , res) => { 
     await Restaurant.findByIdAndUpdate(req.params.id , req.body.restaurant)
     const rest = await Restaurant.findById(req.params.id)
-    if((rest.restaurantAdminID != req.user._id))
+    if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     rest.cuisines = []
@@ -121,7 +121,7 @@ exports.updateRestaurantDetails = catchError(async(req , res) => {
     rest.avgPrice = temp[1]
     rest.itemCount = temp[2]
     rest.save()
-    req.flash('success' , 'Successfully Updated ')
+   // req.flash('success' , 'Successfully Updated ')
     return res.redirect(`/restaurants/${rest._id}`)
 })
 
@@ -129,7 +129,7 @@ exports.removeItem = catchError(async(req , res) => {
     const rest_id = req.params.rest_id
     const item_id = req.params.item_id
     const rest = await Restaurant.findById(rest_id)
-    if(rest.restaurantAdminID != req.user._id)
+    if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     for(let i of rest.items){
@@ -149,13 +149,13 @@ exports.removeItem = catchError(async(req , res) => {
         rest.avgPrice = 0
 
     rest.save()
-    req.flash('success' , 'Successfully Deleted')
+    //req.flash('success' , 'Successfully Deleted')
     return res.redirect(`http://127.0.0.1:3000/restaurants/${rest_id}`)
 })
 
 exports.removeRestaurant = catchError(async(req , res) => {
     const rest = await Restaurant.findById(req.params.id)
-    if((rest.restaurantAdminID != req.user.id))
+    if((rest.restaurantAdminID != req.session.user.id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
     await Restaurant.findByIdAndDelete(req.params.id)
     res.redirect(`http://127.0.0.1:3000/restaurants/`)

@@ -5,7 +5,7 @@ const morgan = require('morgan')
 const methodOverride = require('method-override')
 const ejsMate = require('ejs-mate')
 const session = require('express-session')
-const flash = require('connect-flash')
+//const flash = require('connect-flash')
 const ErrorClass = require('./utilities/errorClass.js')
 const restaurants = require('./routes/restaurants.js')
 const reviews = require('./routes/reviews.js')
@@ -18,12 +18,12 @@ require('dotenv').config()
 connectDB()
 
 const sessionConfig = {
-    secret : 'secret',
+    secret : process.env.SESSION_SECRET_KEY,
     resave : false,
     saveUnintialized : true,
     //store : add mongo/redis store later
     cookie : {
-        expires : Date.now() + (1000 * 60 * 60 * 24),
+        expires : Date.now() + (process.env.COOKIE_EXPIRY_TIME * 1000 * 60 * 60 * 24),
         maxAge : (1000 * 60 * 60 * 24)
     }
 }
@@ -31,7 +31,6 @@ const sessionConfig = {
 const app = express(); 
 
 app.use(morgan('tiny'))
-
 app.use(cookieParser())
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -39,16 +38,16 @@ app.engine('ejs', ejsMate)
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
 app.use(session(sessionConfig))
-app.use(flash())
-
-app.use((req , res , next) => {
-    res.locals.success  = req.flash('success')
-    res.locals.error = req.flash('error')
-    return next()
-})
-
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+//app.use(flash())
+
+// app.use((req , res , next) => {
+//     res.locals.success  = req.flash('success')
+//     res.locals.error = req.flash('error')
+//     return next()
+// })
 
 app.get('/' , (req , res) => {
     res.redirect('/restaurants')}

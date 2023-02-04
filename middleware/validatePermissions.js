@@ -10,8 +10,8 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
     if(!token)
         return next(new errorClass("Login to Access Site" , 401))
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
-    req.user = await Client.findById(decoded.id)
-    if(req.user)
+    req.session.user = await Client.findById(decoded.id)
+    if(req.session.user)
         next()
     else
         return next(new errorClass("Login as Client to Access Site" , 401))
@@ -23,8 +23,8 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
      if(!token)
          return next(new errorClass("Login as Restaurant Admin Access Site" , 401))
      const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
-      req.user = await RestaurantAdmin.findById(decoded.id)
-     if(req.user){
+      req.session.user = await RestaurantAdmin.findById(decoded.id)
+     if(req.session.user){
         next()
      }
      else

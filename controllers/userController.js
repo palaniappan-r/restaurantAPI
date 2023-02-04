@@ -103,30 +103,30 @@ exports.restaurantAdminLogout = catchError(async (req , res , next) => {
 })
 
 exports.clientDetails =  catchError(async (req, res , next) => {
-    const userInfo = await Client.findById(req.user.id).populate('cart');
+    const userInfo = await Client.findById(req.session.user.id).populate('cart');
     res.status(200).render('../views/client_details',{userInfo})
 })
 
 exports.clientCurrentOrders = catchError(async (req, res , next) => {
-    const query = {'clientID' : req.user.id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' } ] }
+    const query = {'clientID' : req.session.user.id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
     const orders = await Order.find(query)
     res.render('../views/clientCurrentOrders' , {orders})
 })
 
 exports.clientPastOrders = catchError(async (req , res , next) => {
-    const query = {'clientID' : req.user.id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
+    const query = {'clientID' : req.session.user.id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
     const orders = await Order.find(query)
     res.render('../views/clientPastOrders' , {orders}).status(123)
 })
 
 exports.restaurantAdminHome = catchError(async(req , res) => {
-    const userInfo = req.user
+    const userInfo = req.session.user
     const rests = await Restaurant.find({"restaurantAdminID" : userInfo._id});
     res.render('../views/restaurantAdminHome' , {userInfo , rests})
 })
 
 exports.addFundsToWallet = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = await Client.findById(req.session.user.id);
     if(!(client._id.equals(req.params.user_id)))
          return next(new ErrorClass('You can only add funds to your own wallet',400))
     client.walletAmount += parseInt(req.body.addFunds)

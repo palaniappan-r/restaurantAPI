@@ -6,7 +6,7 @@ const ErrorClass = require('../utilities/errorClass')
 const User = require("../models/client")
 
 exports.addItemToCart = catchError(async (req , res , next) => {
-    const client = req.user;
+    const client = req.session.user;
     const restaurant = await Restaurant.findById(req.params.rest_id)
     let item
     for(let i of restaurant.items){
@@ -36,7 +36,7 @@ exports.addItemToCart = catchError(async (req , res , next) => {
 })
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
-    const client = req.user;
+    const client = req.session.user;
     let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only remove items from your cart',400))
@@ -59,7 +59,7 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 })
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
-    const client = req.user;
+    const client = req.session.user;
     let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only update items in your cart',400))
@@ -81,7 +81,7 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
 })
 
 exports.placeOrder = catchError(async (req , res , next) => {
-    const client = req.user;
+    const client = req.session.user;
     if(!(client._id.equals(req.params.user_id)))
          return next(new ErrorClass('You can only place orders in your cart',400))
     if(client.walletAmount >= client.cartTotalPrice){
@@ -106,14 +106,14 @@ exports.placeOrder = catchError(async (req , res , next) => {
 
 exports.restaurantPastOrders = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id).populate('pastOrders')
-    if(rest.restaurantAdminID != req.user._id)
+    if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     res.render('showRestaurantPastOrders',{rest})
 })
 
 exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id).populate('currentOrders')
-    if(rest.restaurantAdminID != req.user._id)
+    if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     res.render('showRestaurantCurrentOrders',{rest})
 })
@@ -121,7 +121,7 @@ exports.restaurantCurrentOrders = catchError(async (req , res ,next) => {
 exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
     const status = req.body.status
-    if(rest.restaurantAdminID != req.user._id)
+    if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     else{
         const order = await Order.findById(req.params.order_id)
@@ -154,7 +154,7 @@ exports.restaurantUpdateOrderStatus = catchError(async (req , res , next) => {
 
 exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
-    if(rest.restaurantAdminID != req.user._id)
+    if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
     else{
         const order = await Order.findById(req.params.order_id)
@@ -180,7 +180,7 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
 })
 
 exports.clientCancelOrder = catchError(async (req , res , next) => {
-    const client = req.user;
+    const client = req.session.user;
     const order = await Order.findById(req.params.order_id)
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only update items in your cart',400))
