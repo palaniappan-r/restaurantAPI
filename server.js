@@ -19,8 +19,8 @@ connectDB()
 
 const sessionConfig = {
     secret : 'secret',
-    resave : 'false',
-    saveUnintialized : 'true',
+    resave : false,
+    saveUnintialized : true,
     //store : add mongo/redis store later
     cookie : {
         expires : Date.now() + (1000 * 60 * 60 * 24),

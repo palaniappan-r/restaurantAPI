@@ -6,16 +6,14 @@ const ErrorClass = require('../utilities/errorClass')
 const User = require("../models/client")
 
 exports.addItemToCart = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = req.user;
     const restaurant = await Restaurant.findById(req.params.rest_id)
     let item
-
     for(let i of restaurant.items){
         if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
             item = i
         }
     }
-
     if(!(client._id.equals(req.params.user_id)))
        return next(new ErrorClass('You can only add items to your cart',400))
     else{
@@ -35,11 +33,10 @@ exports.addItemToCart = catchError(async (req , res , next) => {
             client.cartCount += 1
             client.save()
     }
-
 })
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = req.user;
     let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only remove items from your cart',400))
@@ -62,7 +59,7 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 })
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = req.user;
     let order
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only update items in your cart',400))
@@ -84,7 +81,7 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
 })
 
 exports.placeOrder = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = req.user;
     if(!(client._id.equals(req.params.user_id)))
          return next(new ErrorClass('You can only place orders in your cart',400))
     if(client.walletAmount >= client.cartTotalPrice){
@@ -183,7 +180,7 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
 })
 
 exports.clientCancelOrder = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.user.id);
+    const client = req.user;
     const order = await Order.findById(req.params.order_id)
     if(!(client._id.equals(req.params.user_id)))
         return next(new ErrorClass('You can only update items in your cart',400))
