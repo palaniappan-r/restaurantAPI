@@ -183,7 +183,6 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
 })
 
 exports.clientCancelOrder = catchError(async (req , res , next) => {
-    //console.log(req.params)
     const client = await Client.findById(req.user.id);
     const order = await Order.findById(req.params.order_id)
     if(!(client._id.equals(req.params.user_id)))

@@ -7,8 +7,9 @@
                <h2> <%= i.itemName %> </h2>
             </div>
             <div class="d-inline"><br>
-             <h6> Quantity : <%=i.quantity%></h6> 
-             <h6> Current Status : <%=i.status%></h6> 
+                <h4> Quantity : <%=i.quantity%></h4> 
+                <h6> Current Status</h6> 
+                <h2><span class="badge badge-info"> <%=i.status%> </span></h2>
              <form action="/user/cancelOrder/<%=i.clientID%>/<%=i._id%>/?_method=DELETE" method="POST">
                 <button class = "btn btn-outline-danger col-2">
                     Cancel Order

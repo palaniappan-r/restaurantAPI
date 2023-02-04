@@ -18,6 +18,7 @@ const {
     restaurantAdminHome,
     addFundsToWallet,
     clientCurrentOrders,
+    clientPastOrders,
 } = require('../controllers/userController');
 
 const {
@@ -42,6 +43,8 @@ router.route('/clientSignup').post(signupClient)
 router.route('/clientDetails').get(clientIsLoggedIn , clientDetails)
 
 router.route('/currentOrders').get(clientIsLoggedIn , clientCurrentOrders)
+
+router.route('/pastOrders').get(clientIsLoggedIn , clientPastOrders)
 
 router.route('/cancelOrder/:user_id/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
 

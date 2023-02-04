@@ -1,0 +1,18 @@
+<% layout ('/layouts/boilerplate') %>
+    <h1 class = "text-center">Current Orders</h1>
+<ul>
+    <% for(i of orders) { %> 
+        <div class="card text-center">
+            <div class="card-header">
+               <h2> <%= i.itemName %> </h2>
+            </div>
+            <div class="d-inline"><br>
+             <h4> Quantity : <%=i.quantity%></h4> 
+             <h6> Current Status</h6> 
+             <h2><span class="badge badge-info"> <%=i.status%> </span></h2>
+            <br>
+                <h6>Total Price : <%=i.totalPrice%></h6>
+        </div>
+    <br>  
+    <% } %>
+</ul> 
