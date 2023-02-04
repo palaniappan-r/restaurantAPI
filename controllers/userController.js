@@ -45,7 +45,6 @@ exports.restaurantAdminLoginForm = ((req , res , next) => {
 })
 
 exports.clientLogin = catchError(async (req , res , next) => {
-    console.log(req.body)
     const {email , password} = req.body
     
     if(!email || !password)

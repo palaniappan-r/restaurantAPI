@@ -12,17 +12,27 @@ const reviews = require('./routes/reviews.js')
 const users = require('./routes/users')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-
+const {createClient} = require('redis')
+const connectRedis = require('connect-redis')
+const e = require('express')
 require('dotenv').config()
 
 connectDB()
+
+console.log('go')
+
+const redisStore = connectRedis(session)
+const redisClient = createClient({legacyMode: true})
+redisClient.connect().catch(e => {throw (new ErrorClass('Redis Connection Failed' , 404))})
 
 const sessionConfig = {
     secret : process.env.SESSION_SECRET_KEY,
     resave : false,
     saveUnintialized : true,
-    //store : add mongo/redis store later
+    store : new redisStore({client : redisClient}),
     cookie : {
+        secure : true,
+        httpOnly : true,
         expires : Date.now() + (process.env.COOKIE_EXPIRY_TIME * 1000 * 60 * 60 * 24),
         maxAge : (1000 * 60 * 60 * 24)
     }

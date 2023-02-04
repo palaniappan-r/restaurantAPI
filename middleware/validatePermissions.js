@@ -6,27 +6,33 @@ const RestaurantAdmin = require("../models/restaurantAdmin")
 
 exports.clientIsLoggedIn = catchError(async (req , res , next) => {
    // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
-   const token = req.cookies.token
+    const token = req.cookies.token
     if(!token)
         return next(new errorClass("Login to Access Site" , 401))
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
-    req.session.user = await Client.findById(decoded.id)
     if(req.session.user)
         next()
-    else
-        return next(new errorClass("Login as Client to Access Site" , 401))
+    else{
+        req.session.user = await Client.findById(decoded.id)
+        if(!req.session.user)
+            return next(new errorClass("Login as Client to Access Site" , 401))
+        next()
+    }
+    
 })
 
 exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
-     if(!token)
+    if(!token)
          return next(new errorClass("Login as Restaurant Admin Access Site" , 401))
-     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
-      req.session.user = await RestaurantAdmin.findById(decoded.id)
-     if(req.session.user){
+    const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
+    if(req.session.user)
+        next()
+     else{
+         req.session.user = await RestaurantAdmin.findById(decoded.id)
+        if(!req.session.user)
+            return next(new errorClass("Login as Client to Access Site" , 401))
         next()
      }
-     else
-        return next(new errorClass("Login with your credentials" , 401))
  })
