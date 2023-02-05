@@ -3,10 +3,13 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
-const { 
-    clientIsLoggedIn, 
-    restaurantAdminIsLoggedIn 
-} = require('../middleware/validatePermissions')
+const { clientIsLoggedIn , restaurantAdminIsLoggedIn , clientIsLoggedIn_noToken , restaurantAdminIsLoggedIn_noToken} = require('../middleware/validatePermissions')
+
+/*
+       // Uncomment this part to use session based auth without jwt cookie tokens
+        clientIsLoggedIn = clientIsLoggedIn_noToken
+        restaurantAdminIsLoggedIn = restaurantAdminIsLoggedIn_noToken
+*/
 
 const {
     indexPage, 
@@ -38,40 +41,44 @@ router.route('/').get(clientIsLoggedIn , indexPage)
 //GET Route for new restaurant form
 router.route('/new').get(restaurantAdminIsLoggedIn , newRestaurantForm)
 
-//GET Route to display info about a specific restaurant
-router.route('/:id').get(clientIsLoggedIn , showRestaurantClientInfo)
+//GET Route to display info about a specific restaurant for the client
+router.route('/:rest_id').get(clientIsLoggedIn , showRestaurantClientInfo)
 
 //GET Route to display info about a specific restaurant for the owner
-router.route('/admin/:id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
-
-//POST Route to add a new item
-router.route('/:id' , validateItem).post(restaurantAdminIsLoggedIn , addNewItem)
-
-//GET Route for new item form
-router.route('/newItem/:id').get(restaurantAdminIsLoggedIn , newItemForm)
+router.route('/admin/:rest_id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
 
 //POST Route to add a Restaurant
 router.route('/' , validateRestaurant).post(restaurantAdminIsLoggedIn , addNewRestaurant)
 
 //GET Route for edit restaurant form
-router.route('/:id/update').get(restaurantAdminIsLoggedIn , editRestaurantForm)
+router.route('/:rest_id/update').get(restaurantAdminIsLoggedIn , editRestaurantForm)
 
 //PUT Route to update restaurant details
-router.route('/:id' , validateRestaurant).put(restaurantAdminIsLoggedIn , updateRestaurantDetails)
-
-//DELETE Route to remove an item
-router.route('/items/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , removeItem)
+router.route('/:rest_id' , validateRestaurant).put(restaurantAdminIsLoggedIn , updateRestaurantDetails)
 
 //DELETE Route to remove a restaurant
-router.route('/:id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
+router.route('/:rest_id/removeRestaurant').delete(restaurantAdminIsLoggedIn , removeRestaurant)
 
+//POST Route to add a new item
+router.route('/:rest_id/newItem' , validateItem).post(restaurantAdminIsLoggedIn , addNewItem)
+
+//GET Route for new item form
+router.route('/:rest_id/newItem').get(restaurantAdminIsLoggedIn , newItemForm)
+
+//DELETE Route to remove an item
+router.route('/:rest_id/:item_id/removeItem').delete(restaurantAdminIsLoggedIn , removeItem)
+
+//GET Route to view current orders
 router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaurantCurrentOrders)
 
+//GET Route to view past orders
 router.route('/:rest_id/pastOrders').get(restaurantAdminIsLoggedIn , restaurantPastOrders)
 
-router.route('/:rest_id/:order_id/').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
+//PUT Route to update order status
+router.route('/:rest_id/:order_id/updateOrderStatus').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
 
-router.route('/:rest_id/:order_id/').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
+//DELETE Route to cancel order
+router.route('/:rest_id/:order_id/cancelOrder').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
 
 router.use((err , req , res , next) => {
     const {statusCode = 400 , message = "ERROR"} = err

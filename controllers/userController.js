@@ -5,7 +5,6 @@ const Order = require('../models/order')
 const errorClass = require("../utilities/errorClass")
 const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
-const ErrorClass = require('../utilities/errorClass')
 
 exports.signupClientForm = ((req , res , next) => {
     res.render('../views/new_client.ejs')
@@ -26,7 +25,12 @@ exports.signupClient = catchError(async (req, res, next) => {
     newClient.cartTotalPrice = 0
     newClient.walletAmount = 0
     newClient.save()
-    createCookieToken(newClient , res)
+    createCookieToken(newClient , res) //Comment this statement out to use session based auth without jwt cookie tokens
+
+    /*
+       // Uncomment this part to use session based auth without jwt cookie tokens
+        req.sessions.user = newClient 
+    */
 })
 
 exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
@@ -37,7 +41,12 @@ exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
 
     const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
     
-    createCookieToken(newRestaurantAdmin , res)
+    createCookieToken(newRestaurantAdmin , res) //Comment this statement out to use session based auth without jwt cookie tokens
+
+    /*
+      // Uncomment this part to use session based auth without jwt cookie tokens
+        req.sessions.user = newRestaurantAdmin
+    */
 })
 
 exports.restaurantAdminLoginForm = ((req , res , next) => {
@@ -60,7 +69,12 @@ exports.clientLogin = catchError(async (req , res , next) => {
     if(!pass)
         return next(new errorClass('Wrong Password' , 400))
 
-    createCookieToken(client , res)
+    createCookieToken(client , res) //Comment this statement out to use session based auth without jwt cookie tokens
+    
+    /*
+       // Uncomment this part to use session based auth without jwt cookie tokens
+        req.sessions.user = client
+    */
 })
 
 exports.clientLoginForm = ((req , res , next) => {
@@ -83,14 +97,20 @@ exports.restaurantAdminLogin = catchError(async (req , res , next) => {
     if(!pass)
         return next(new errorClass('Wrong Password' , 400))
 
-    createCookieToken(restaurantAdmin , res)
+    createCookieToken(restaurantAdmin , res) //Comment this statement out to use session based auth without jwt cookie tokens
+
+    /*
+       // Uncomment this part to use session based auth without jwt cookie tokens
+        req.sessions.user = restaurantAdmin
+    */
 })
 
 exports.logout = catchError(async (req , res , next) => {
-    res.cookie('token' , null , {
+    res.cookie('token' , null , { //Comment these statements out to use session based auth without jwt cookie tokens
         expires : new Date(Date.now()),
         httpOnly : true
     })
+    req.session.destroy()
     res.redirect('/')
 })
 
@@ -99,21 +119,23 @@ exports.restaurantAdminLogout = catchError(async (req , res , next) => {
         expires : new Date(Date.now()),
         httpOnly : true
     })
+    req.session.destroy()
+    res.redirect('/')
 })
 
 exports.clientDetails =  catchError(async (req, res , next) => {
-    const userInfo = await Client.findById(req.session.user.id).populate('cart');
+    const userInfo = await Client.findById(req.session.user._id).populate('cart');
     res.status(200).render('../views/client_details',{userInfo})
 })
 
 exports.clientCurrentOrders = catchError(async (req, res , next) => {
-    const query = {'clientID' : req.session.user.id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
+    const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
     const orders = await Order.find(query)
     res.render('../views/clientCurrentOrders' , {orders})
 })
 
 exports.clientPastOrders = catchError(async (req , res , next) => {
-    const query = {'clientID' : req.session.user.id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
+    const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
     const orders = await Order.find(query)
     res.render('../views/clientPastOrders' , {orders}).status(123)
 })
@@ -125,9 +147,7 @@ exports.restaurantAdminHome = catchError(async(req , res) => {
 })
 
 exports.addFundsToWallet = catchError(async (req , res , next) => {
-    const client = await Client.findById(req.session.user.id);
-    if(!(client._id.equals(req.params.user_id)))
-         return next(new ErrorClass('You can only add funds to your own wallet',400))
+    const client = await Client.findById(req.session.user._id);
     client.walletAmount += parseInt(req.body.addFunds)
     client.save()
     return res.redirect('/user/clientDetails')

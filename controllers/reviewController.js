@@ -5,16 +5,13 @@ const Order = require('../models/order')
 const ErrorClass = require('../utilities/errorClass');
 
 exports.addReview = catchError(async(req , res , next) =>{ 
-    client = req.session.user
-    if(!(client._id.equals(req.params.user_id)))
-       return next(new ErrorClass('You can only add reviews from your account',400))
-    else{
-        const rest = await Restaurant.findById(req.params.rest_id)
+    const client = await Client.findById(req.session.user._id)
+    const rest = await Restaurant.findById(req.params.rest_id)
         const orders = await Order.findOne({'clientID' : req.session.user._id , 'status' : 'Done'})
         if(orders){
             const rev = new Review(req.body.review)
-            rev.client_id = req.session.user._id
-            rev.client_name = req.session.user.name
+            rev.client_id = client._id
+            rev.client_name = client.name
             rest.reviews.push(rev)
             rev.save()
             rest.save()
@@ -22,7 +19,6 @@ exports.addReview = catchError(async(req , res , next) =>{
         }
         else
             return next(new ErrorClass('You need atleast one completed order to add a review to this restaurant' , 400))
-    }
 })
 
 exports.deleteReview = catchError(async(req , res) =>{  

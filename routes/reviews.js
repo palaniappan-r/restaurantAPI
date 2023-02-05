@@ -10,7 +10,7 @@ const {
 
 const router = express.Router()
 
-router.route('/:rest_id/:user_id').post(clientIsLoggedIn,addReview)
+router.route('/:rest_id').post(clientIsLoggedIn,addReview)
 
 router.route('/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
 

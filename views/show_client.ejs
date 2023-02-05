@@ -12,7 +12,7 @@
             <% for(i of rest.items) {%>
                 <div class="d-inline">
                     <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3>
-                        <form action="/user/addToCart/<%=clientid%>/<%=rest._id %>/<%=i._id%>/" method="POST"> 
+                        <form action="/user/addToCart/<%=rest._id %>/<%=i._id%>/" method="POST"> 
                         <div class="col-1">Quantity</div>
                         <input type="number" class="form-control col-2" id="quantity" aria-describedby="quantity" name="quantity" value="1" required><br>
                         <button class = "btn btn-outline-primary">Add To Cart</button>
@@ -37,7 +37,7 @@
         <% } %>  
         </ul>
         <h2> Add Review to <%=rest.name%></h2><br>
-        <form action="/restaurants/reviews/<%=rest._id%>/<%=clientid%>" method="POST">
+        <form action="/restaurants/reviews/<%=rest._id%>" method="POST">
             <div class="form-group">
               <label for="text" class="form-label"><h5>Review</h5></label>
               <textarea class="form-control" id="text" aria-describedby="text" name="review[text]" required></textarea><br>

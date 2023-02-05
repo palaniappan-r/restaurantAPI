@@ -2,7 +2,13 @@ const express = require('express')
 const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
-const { clientIsLoggedIn , restaurantAdminIsLoggedIn } = require('../middleware/validatePermissions')
+const { clientIsLoggedIn , restaurantAdminIsLoggedIn , clientIsLoggedIn_noToken , restaurantAdminIsLoggedIn_noToken} = require('../middleware/validatePermissions')
+
+/*
+       // Uncomment this part to use session based auth without jwt cookie tokens
+        clientIsLoggedIn = clientIsLoggedIn_noToken
+        restaurantAdminIsLoggedIn = restaurantAdminIsLoggedIn_noToken
+*/
 
 const {
     signupClient , 
@@ -46,10 +52,6 @@ router.route('/currentOrders').get(clientIsLoggedIn , clientCurrentOrders)
 
 router.route('/pastOrders').get(clientIsLoggedIn , clientPastOrders)
 
-router.route('/cancelOrder/:user_id/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
-
-router.route('/logout').get(logout)
-
 router.route('/restaurantAdminLogin').get(restaurantAdminLoginForm)
 
 router.route('/restaurantAdminLogin').post(restaurantAdminLogin)
@@ -60,15 +62,19 @@ router.route('/restaurantAdminSignup').post(signupRestaurantAdmin)
 
 router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantAdminHome)
 
-router.route('/addToCart/:user_id/:rest_id/:item_id').post(clientIsLoggedIn , addItemToCart)
+router.route('/addToCart/:rest_id/:item_id').post(clientIsLoggedIn , addItemToCart)
 
-router.route('/removeFromCart/:user_id/:order_id').delete(clientIsLoggedIn , removeItemFromCart)
+router.route('/removeFromCart/:order_id').delete(clientIsLoggedIn , removeItemFromCart)
 
-router.route('/updateCartQuantity/:user_id/:order_id').put(clientIsLoggedIn , updateItemCartQuantity)
+router.route('/updateCartQuantity/:order_id').put(clientIsLoggedIn , updateItemCartQuantity)
 
-router.route('/addFundsToWallet/:user_id').post(clientIsLoggedIn , addFundsToWallet)
+router.route('/addFundsToWallet').post(clientIsLoggedIn , addFundsToWallet)
 
-router.route('/placeOrder/:user_id').get(clientIsLoggedIn , placeOrder)
+router.route('/placeOrder').get(clientIsLoggedIn , placeOrder)
+
+router.route('/cancelOrder/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
+
+router.route('/logout').get(logout)
 
 router.use((err , req , res , next) => {
     const {statusCode = 400 , message = "ERROR"} = err

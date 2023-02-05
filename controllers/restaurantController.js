@@ -12,15 +12,13 @@ exports.newRestaurantForm = catchError(async(req , res) => {
 })
 
 exports.showRestaurantClientInfo = catchError(async(req , res) => { 
-    const {id} = req.params;
-    const rest = await Restaurant.findById(id).populate('reviews');
-    const clientid = (req.session.user.id);
+    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews');
+    const clientid = (req.session.user._id);
     res.render('show_client',{rest,clientid});
 })
 
 exports.showRestaurantAdminInfo = catchError(async(req , res , next) => { 
-    const {id} = req.params;
-    const rest = await Restaurant.findById(id).populate('reviews');
+    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews');
     const userid = req.session.user._id
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
@@ -32,8 +30,7 @@ exports.addNewItem = catchError(async(req , res) => {
     if(!req.body.item)
         return next (new ErrorClass('EMPTY REQUEST BODY' , 400))
 
-    const {id} = req.params;
-    const rest = await Restaurant.findById(id)
+    const rest = await Restaurant.findById(req.params.rest_id)
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
@@ -51,13 +48,12 @@ exports.addNewItem = catchError(async(req , res) => {
 
     await rest.save()
    // req.flash('success' , 'Successfully Added an Item')
-    return res.redirect(`/restaurants/${id}`)
+    return res.redirect(`/restaurants/admin/${req.params.rest_id}`)
 })
 
 exports.newItemForm = catchError(async(req , res) => { 
-    const {id} = req.params;
-    const rest = await Restaurant.findById(id);
-    res.render('new_item',{id,rest})
+    const rest = await Restaurant.findById(req.params.rest_id);
+    res.render('new_item',{rest})
 })
 
 exports.addNewRestaurant = catchError(async(req , res , next) => { 
@@ -86,19 +82,19 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
     rest.totalRevenue = 0
     await rest.save()
     //req.flash('success' , 'Successfully Added a Restaurant ')
-    return res.redirect(`/restaurants/${rest._id}`)
+    return res.redirect(`/restaurants/admin/${rest._id}`)
 })
 
 exports.editRestaurantForm = catchError(async(req , res) => { 
-    const {id} = req.params;
-    const rest = await Restaurant.findById(id);
+    const {rest_id} = req.params;
+    const rest = await Restaurant.findById(rest_id);
     let temp = [rest.items , rest.avgPrice , rest.itemCount]
     res.render('update',{rest});
 })
 
 exports.updateRestaurantDetails = catchError(async(req , res) => { 
-    await Restaurant.findByIdAndUpdate(req.params.id , req.body.restaurant)
-    const rest = await Restaurant.findById(req.params.id)
+    await Restaurant.findByIdAndUpdate(req.params.rest_id , req.body.restaurant)
+    const rest = await Restaurant.findById(req.params.rest_id)
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
@@ -122,7 +118,7 @@ exports.updateRestaurantDetails = catchError(async(req , res) => {
     rest.itemCount = temp[2]
     rest.save()
    // req.flash('success' , 'Successfully Updated ')
-    return res.redirect(`/restaurants/${rest._id}`)
+    return res.redirect(`/restaurants/admin/${rest._id}`)
 })
 
 exports.removeItem = catchError(async(req , res) => { 
@@ -150,13 +146,13 @@ exports.removeItem = catchError(async(req , res) => {
 
     rest.save()
     //req.flash('success' , 'Successfully Deleted')
-    return res.redirect(`http://127.0.0.1:3000/restaurants/${rest_id}`)
+    return res.redirect(`/restaurants/admin/${rest._id}`)
 })
 
 exports.removeRestaurant = catchError(async(req , res) => {
-    const rest = await Restaurant.findById(req.params.id)
-    if((rest.restaurantAdminID != req.session.user.id))
+    const rest = await Restaurant.findById(req.params.rest_id)
+    if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
-    await Restaurant.findByIdAndDelete(req.params.id)
-    res.redirect(`http://127.0.0.1:3000/restaurants/`)
+    await Restaurant.findByIdAndDelete(req.params.rest_id)
+    res.redirect(`/restaurants`)
 })

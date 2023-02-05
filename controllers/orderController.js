@@ -6,7 +6,7 @@ const ErrorClass = require('../utilities/errorClass')
 const User = require("../models/client")
 
 exports.addItemToCart = catchError(async (req , res , next) => {
-    const client = req.session.user;
+    const client = await Client.findById(req.session.user._id)
     const restaurant = await Restaurant.findById(req.params.rest_id)
     let item
     for(let i of restaurant.items){
@@ -14,76 +14,62 @@ exports.addItemToCart = catchError(async (req , res , next) => {
             item = i
         }
     }
-    if(!(client._id.equals(req.params.user_id)))
-       return next(new ErrorClass('You can only add items to your cart',400))
-    else{
-            const newOrder = await Order.create({
-                clientID : client._id,
-                restaurantID : req.params.rest_id,
-                itemID : req.params.item_id,
-                restaurantName : restaurant.name,
-                itemName : item.name,
-                quantity : req.body.quantity,
-                unitPrice : item.price,
-                totalPrice : (item.price * req.body.quantity),
-            }) 
-            newOrder.save()
-            client.cart.push(newOrder._id)
-            client.cartTotalPrice += (item.price * req.body.quantity)
-            client.cartCount += 1
-            client.save()
-    }
+    const newOrder = await Order.create({
+        clientID : client._id,
+        restaurantID : req.params.rest_id,
+        itemID : req.params.item_id,
+        restaurantName : restaurant.name,
+        itemName : item.name,
+        quantity : req.body.quantity,
+        unitPrice : item.price,
+        totalPrice : (item.price * req.body.quantity),
+    }) 
+    newOrder.save()
+    client.cart.push(newOrder._id)
+    client.cartTotalPrice += (item.price * req.body.quantity)
+    client.cartCount += 1
+    client.save()
 })
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
-    const client = req.session.user;
+    const client = await Client.findById(req.session.user._id)
     let order
-    if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('You can only remove items from your cart',400))
-    else{
-        let index = 0
-        for(let i of client.cart){
-            if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
-                order = await Order.findById(i)
-                client.cartCount -= 1
-                client.cartTotalPrice -= order.totalPrice
-                client.cart.splice(index,1)
-                await Order.findByIdAndDelete(i)
-                break
-            }
-            index++
+    let index = 0
+    for(let i of client.cart){
+        if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
+            order = await Order.findById(i)
+            client.cartCount -= 1
+            client.cartTotalPrice -= order.totalPrice
+            client.cart.splice(index,1)
+            await Order.findByIdAndDelete(i)
+            break
         }
-        client.save()
-        return res.redirect(`/user/clientDetails`)
+        index++
     }
+    client.save()
+    return res.redirect(`/user/clientDetails`)
 })
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
-    const client = req.session.user;
+    const client = await Client.findById(req.session.user._id)
     let order
-    if(!(client._id.equals(req.params.user_id)))
-        return next(new ErrorClass('You can only update items in your cart',400))
-    else{
-        for(let i of client.cart){
-            if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
-                order = await Order.findById(i)
-                client.cartTotalPrice -= order.totalPrice
-                order.quantity = req.body.new_quantity
-                order.totalPrice = (order.quantity * order.unitPrice)
-                await order.save()
-                client.cartTotalPrice += order.totalPrice
-                break
-            }
+    for(let i of client.cart){
+        if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
+            order = await Order.findById(i)
+            client.cartTotalPrice -= order.totalPrice
+            order.quantity = req.body.new_quantity
+            order.totalPrice = (order.quantity * order.unitPrice)
+            await order.save()
+            client.cartTotalPrice += order.totalPrice
+            break
         }
-        await client.save()
-        return res.redirect(`/user/clientDetails`)
     }
+    await client.save()
+    return res.redirect(`/user/clientDetails`)
 })
 
 exports.placeOrder = catchError(async (req , res , next) => {
-    const client = req.session.user;
-    if(!(client._id.equals(req.params.user_id)))
-         return next(new ErrorClass('You can only place orders in your cart',400))
+    const client = await Client.findById(req.session.user._id)
     if(client.walletAmount >= client.cartTotalPrice){
         for(let i of client.cart){
             const order = await Order.findById(i)
@@ -180,9 +166,9 @@ exports.restaurantCancelOrder = catchError(async (req , res ,next) => {
 })
 
 exports.clientCancelOrder = catchError(async (req , res , next) => {
-    const client = req.session.user;
+    const client = await Client.findById(req.session.user._id)
     const order = await Order.findById(req.params.order_id)
-    if(!(client._id.equals(req.params.user_id)))
+    if(!(client._id.equals(order.clientID)))
         return next(new ErrorClass('You can only update items in your cart',400))
     else{
         const rest = await Restaurant.findById(order.restaurantID)

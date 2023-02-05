@@ -18,15 +18,15 @@
             <% for(i of rest.items) {%>
                 <div class="d-inline">
                     <li class="list-group-item"> <h3><%=i.name%></h3> <div class="text-right"><h3>₹<%=i.price%></h3></div> 
-                        <form action="/restaurants/items/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete Item </button></form>
+                        <form action="/restaurants/<%=rest._id %>/<%=i._id%>/removeItem/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Remove Item</button></form>
                     </li><br>
                 </div>
             <% } %>
         </ul>
         <img src="<%= rest.image %>" alt="">
         <a href="/restaurants/<%=rest._id %>/update" class="btn btn-info btn-lg btn-block">Edit Details</a><br>
-        <a href="/restaurants/newItem/<%=rest._id %>" class="btn btn-success btn-lg btn-block">Add Item</a><br>
-        <form action="/restaurants/<%=rest._id %>?_method=DELETE" , method="POST">
+        <a href="/restaurants/<%=rest._id %>/newItem" class="btn btn-success btn-lg btn-block">Add Item</a><br>
+        <form action="/restaurants/<%=rest._id %>/removeRestaurant?_method=DELETE" , method="POST">
         <button class="btn btn-danger btn-lg btn-block">Remove Restaurant</button>
         </form>
     </div>

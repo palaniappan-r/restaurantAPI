@@ -1,6 +1,6 @@
 <% layout ('/layouts/boilerplate') %>
 <h1> <span class="badge badge-success text-center"> Add Item to <%=rest.name%> </span> </h1><br>
-<form action="/restaurants/<%=id%>" method="POST" novalidate class="validated-form">
+<form action="/restaurants/<%=rest._id%>/newItem" method="POST" novalidate class="validated-form">
     <div class="form-group">
       <h4>Name</h4>
       <input type="text" class="form-control" id="name" aria-describedby="name" name="item[name]" required><br>
