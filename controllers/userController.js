@@ -25,12 +25,7 @@ exports.signupClient = catchError(async (req, res, next) => {
     newClient.cartTotalPrice = 0
     newClient.walletAmount = 0
     newClient.save()
-    createCookieToken(newClient , res) //Comment this statement out to use session based auth without jwt cookie tokens
-
-    /*
-       // Uncomment this part to use session based auth without jwt cookie tokens
-        req.sessions.user = newClient 
-    */
+    createCookieToken(newClient , res)
 })
 
 exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
@@ -41,12 +36,7 @@ exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
 
     const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
     
-    createCookieToken(newRestaurantAdmin , res) //Comment this statement out to use session based auth without jwt cookie tokens
-
-    /*
-      // Uncomment this part to use session based auth without jwt cookie tokens
-        req.sessions.user = newRestaurantAdmin
-    */
+    createCookieToken(newRestaurantAdmin , res)
 })
 
 exports.restaurantAdminLoginForm = ((req , res , next) => {
@@ -69,12 +59,8 @@ exports.clientLogin = catchError(async (req , res , next) => {
     if(!pass)
         return next(new errorClass('Wrong Password' , 400))
 
-    createCookieToken(client , res) //Comment this statement out to use session based auth without jwt cookie tokens
-    
-    /*
-       // Uncomment this part to use session based auth without jwt cookie tokens
-        req.sessions.user = client
-    */
+    createCookieToken(client , res)
+
 })
 
 exports.clientLoginForm = ((req , res , next) => {
@@ -97,16 +83,11 @@ exports.restaurantAdminLogin = catchError(async (req , res , next) => {
     if(!pass)
         return next(new errorClass('Wrong Password' , 400))
 
-    createCookieToken(restaurantAdmin , res) //Comment this statement out to use session based auth without jwt cookie tokens
-
-    /*
-       // Uncomment this part to use session based auth without jwt cookie tokens
-        req.sessions.user = restaurantAdmin
-    */
+    createCookieToken(restaurantAdmin , res)
 })
 
 exports.logout = catchError(async (req , res , next) => {
-    res.cookie('token' , null , { //Comment these statements out to use session based auth without jwt cookie tokens
+    res.cookie('token' , null , {
         expires : new Date(Date.now()),
         httpOnly : true
     })

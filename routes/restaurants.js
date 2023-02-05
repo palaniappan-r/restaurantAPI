@@ -3,13 +3,7 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const {validateRestaurant , validateItem} = require('../utilities/schemaValidations.js');
-const { clientIsLoggedIn , restaurantAdminIsLoggedIn , clientIsLoggedIn_noToken , restaurantAdminIsLoggedIn_noToken} = require('../middleware/validatePermissions')
-
-/*
-       // Uncomment this part to use session based auth without jwt cookie tokens
-        clientIsLoggedIn = clientIsLoggedIn_noToken
-        restaurantAdminIsLoggedIn = restaurantAdminIsLoggedIn_noToken
-*/
+var { clientIsLoggedIn , restaurantAdminIsLoggedIn} = require('../middleware/validatePermissions')
 
 const {
     indexPage, 

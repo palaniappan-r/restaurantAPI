@@ -13,7 +13,6 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
     }
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
     if(req.session.user){
-        console.log('Exists')
         const userInfo = await Client.findById(decoded.id)
         if(userInfo)
             return next()
@@ -42,7 +41,6 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     }
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
     if(req.session.user){
-        console.log('resExists')
         const userInfo = await RestaurantAdmin.findById(decoded.id)
         if(userInfo)
             return next()

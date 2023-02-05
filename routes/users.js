@@ -2,13 +2,13 @@ const express = require('express')
 const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
-const { clientIsLoggedIn , restaurantAdminIsLoggedIn , clientIsLoggedIn_noToken , restaurantAdminIsLoggedIn_noToken} = require('../middleware/validatePermissions')
+var { clientIsLoggedIn , restaurantAdminIsLoggedIn} = require('../middleware/validatePermissions')
 
-/*
-       // Uncomment this part to use session based auth without jwt cookie tokens
-        clientIsLoggedIn = clientIsLoggedIn_noToken
-        restaurantAdminIsLoggedIn = restaurantAdminIsLoggedIn_noToken
-*/
+const { 
+    addReview, 
+    deleteReview, 
+    test
+} = require('../controllers/reviewController');
 
 const {
     signupClient , 
@@ -73,6 +73,10 @@ router.route('/addFundsToWallet').post(clientIsLoggedIn , addFundsToWallet)
 router.route('/placeOrder').get(clientIsLoggedIn , placeOrder)
 
 router.route('/cancelOrder/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
+
+router.route('/addReview/:rest_id').post(addReview)
+
+router.route('/removeReview/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
 
 router.route('/logout').get(logout)
 

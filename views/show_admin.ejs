@@ -39,7 +39,7 @@
                 <li class="list-group-item"> 
                     Rating : <%=i.rating%>
                     <p> <%= i.text %> </p> 
-                    <form action="/restaurants/reviews/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete</button></form>
+                    <form action="/user/removeReview/<%=rest._id %>/<%=i._id%>/?_method=DELETE" method="POST"> <button class = "btn btn-outline-danger">Delete</button></form>
                 </li>
             </div>
         <% } %>  

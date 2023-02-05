@@ -3,6 +3,7 @@ const Review = require('../models/review')
 const catchError = require('../utilities/catchError')
 const Order = require('../models/order')
 const ErrorClass = require('../utilities/errorClass');
+const Client = require('../models/client')
 
 exports.addReview = catchError(async(req , res , next) =>{ 
     const client = await Client.findById(req.session.user._id)
@@ -31,4 +32,8 @@ exports.deleteReview = catchError(async(req , res) =>{
         rest.save()
         res.redirect(`/restaurants/admin/${rest._id}`)
     }
+})
+
+exports.test = ((req,res) => {
+    console.log('hello')
 })

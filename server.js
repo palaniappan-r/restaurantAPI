@@ -11,7 +11,6 @@ const ejsMate = require('ejs-mate')
 const methodOverride = require('method-override')
 const ErrorClass = require('./utilities/errorClass.js')
 const restaurants = require('./routes/restaurants.js')
-const reviews = require('./routes/reviews.js')
 const users = require('./routes/users')
 
 require('dotenv').config()
@@ -36,7 +35,6 @@ app.get('/' , (req , res) => {
 
 app.use('/user',users)
 app.use('/restaurants',restaurants)
-app.use('/restaurants/reviews',reviews)
 
 app.all('*' , (req , res , next) => {
     next(new ErrorClass('PAGE NOT FOUND' , 404))

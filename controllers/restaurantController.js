@@ -154,5 +154,5 @@ exports.removeRestaurant = catchError(async(req , res) => {
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
     await Restaurant.findByIdAndDelete(req.params.rest_id)
-    res.redirect(`/restaurants`)
+    res.redirect(`/user/restaurantAdminHome`)
 })
