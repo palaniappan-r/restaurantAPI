@@ -16,7 +16,8 @@ const {
     removeItem, 
     removeRestaurant,
     showRestaurantClientInfo, 
-    showRestaurantAdminInfo
+    showRestaurantAdminInfo,
+    getTotalRevenue
 } = require("../controllers/restaurantController")
 
 const {
@@ -40,6 +41,9 @@ router.route('/:rest_id').get(clientIsLoggedIn , showRestaurantClientInfo)
 
 //GET Route to display info about a specific restaurant for the owner
 router.route('/admin/:rest_id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
+
+//GET Route to get total revenue of a restaurant
+router.route('/:rest_id/totalRevenue').get(restaurantAdminIsLoggedIn , getTotalRevenue)
 
 //POST Route to add a Restaurant
 router.route('/' , validateRestaurant).post(restaurantAdminIsLoggedIn , addNewRestaurant)

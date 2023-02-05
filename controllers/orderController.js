@@ -195,3 +195,11 @@ exports.clientCancelOrder = catchError(async (req , res , next) => {
     }
 })
 
+exports.clientGetOrderStatus = catchError(async (req , res , next) => {
+    const client = await Client.findById(req.session.user._id)
+    const order = await Order.findById(req.params.order_id)
+    if(!(client._id.equals(order.clientID)))
+        return next(new ErrorClass('You can only view orders in your account',400))
+    res.json(order.status)
+})
+

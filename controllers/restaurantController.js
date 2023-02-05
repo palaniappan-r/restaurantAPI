@@ -149,10 +149,20 @@ exports.removeItem = catchError(async(req , res) => {
     return res.redirect(`/restaurants/admin/${rest._id}`)
 })
 
-exports.removeRestaurant = catchError(async(req , res) => {
+exports.removeRestaurant = catchError(async(req , res , next) => {
     const rest = await Restaurant.findById(req.params.rest_id)
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only delete your own restaurant',400))
     await Restaurant.findByIdAndDelete(req.params.rest_id)
     res.redirect(`/user/restaurantAdminHome`)
+})
+
+exports.getTotalRevenue = catchError(async(req , res , next) => {
+    console.log('hi')
+    const rest = await Restaurant.findById(req.params.rest_id)
+     if((rest.restaurantAdminID != req.session.user._id))
+        return next(new ErrorClass('You can only view your own restaurant',400))
+    const rev = rest.totalRevenue
+    res.json(rev)
+   // res.send(rest.totalRevenue)
 })

@@ -32,7 +32,9 @@ const {
     removeItemFromCart,
     updateItemCartQuantity,
     placeOrder,
-    clientCancelOrder
+    clientCancelOrder,
+    clientViewOrderStatus,
+    clientGetOrderStatus
 } = require('../controllers/orderController')
 
 router.use(urlencoded({ extended: true }));
@@ -71,6 +73,8 @@ router.route('/updateCartQuantity/:order_id').put(clientIsLoggedIn , updateItemC
 router.route('/addFundsToWallet').post(clientIsLoggedIn , addFundsToWallet)
 
 router.route('/placeOrder').get(clientIsLoggedIn , placeOrder)
+
+router.route('/getOrderStatus/:order_id').get(clientIsLoggedIn , clientGetOrderStatus)
 
 router.route('/cancelOrder/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
 
