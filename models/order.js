@@ -3,18 +3,15 @@ const mongoose = require('mongoose')
 const orderSchema = new mongoose.Schema({
     clientID : {
         type : String,
-        required : true
     },
     restaurantID : {
         type : String,
-        required : true
     },
     restaurantName : {
         type : String,
     },
     itemID : {
         type : String,
-        required : true
     },
     itemName : {
         type : String,

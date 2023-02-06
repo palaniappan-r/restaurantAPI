@@ -10,10 +10,6 @@ exports.signupClientForm = ((req , res , next) => {
     res.render('../views/new_client.ejs')
 })
 
-exports.signupRestaurantAdminForm = ((req , res , next) => {
-    res.render('../views/new_restaurant_admin.ejs')
-})
-
 exports.signupClient = catchError(async (req, res, next) => {
     const {name , password , email} = req.body;
 
@@ -28,22 +24,11 @@ exports.signupClient = catchError(async (req, res, next) => {
     createCookieToken(newClient , res)
 })
 
-exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
-    const {name , email , password} = req.body;
+exports.clientLoginForm = ((req , res , next) => {
+    res.render('../views/client_login.ejs')
+ })
 
-    if(!name || !password || !email)
-        return next(new errorClass('Name/Email/Password Missing' , 400))
-
-    const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
-    
-    createCookieToken(newRestaurantAdmin , res)
-})
-
-exports.restaurantAdminLoginForm = ((req , res , next) => {
-    res.render('../views/restaurant_admin_login.ejs')
-})
-
-exports.clientLogin = catchError(async (req , res , next) => {
+ exports.clientLogin = catchError(async (req , res , next) => {
     const {email , password} = req.body
     
     if(!email || !password)
@@ -63,9 +48,24 @@ exports.clientLogin = catchError(async (req , res , next) => {
 
 })
 
-exports.clientLoginForm = ((req , res , next) => {
-    res.render('../views/client_login.ejs')
- })
+exports.signupRestaurantAdminForm = ((req , res , next) => {
+    res.render('../views/new_restaurant_admin.ejs')
+})
+
+exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
+    const {name , email , password} = req.body;
+
+    if(!name || !password || !email)
+        return next(new errorClass('Name/Email/Password Missing' , 400))
+
+    const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
+    
+    createCookieToken(newRestaurantAdmin , res)
+})
+
+exports.restaurantAdminLoginForm = ((req , res , next) => {
+    res.render('../views/restaurant_admin_login.ejs')
+})
 
 exports.restaurantAdminLogin = catchError(async (req , res , next) => {
     const {email , password} = req.body

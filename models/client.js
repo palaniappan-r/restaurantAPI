@@ -8,17 +8,14 @@ const Order = require('./order')
 const clientSchema = new mongoose.Schema({
     name : {
         type : String,
-        required : [true , 'Name is required']
     },
     email : {
         type : String,
-        required : [true , 'Email ID is required'],
         validate : [validator.isEmail , 'Enter Email in correct format'],
         unique : true
     },
     password : {
         type : String,
-        required : [true , 'Password is required']
     },
     cart :{
         type : [{
