@@ -97,10 +97,12 @@ const validateOrder = (req , res, next) => {
 
 const validateReview = (req , res , next) => {
     const reviewSchema = joi.object({
+        review : joi.object({
         client_id : joi.string(),
         client_name : joi.string(),
         text : joi.string(),
         rating : joi.number()
+        })
     })
 
     const rslt = reviewSchema.validate(req.body)

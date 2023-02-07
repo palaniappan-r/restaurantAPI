@@ -20,6 +20,7 @@ exports.signupClient = catchError(async (req, res, next) => {
     newClient.cartCount = 0
     newClient.cartTotalPrice = 0
     newClient.walletAmount = 0
+    newClient.createdAt = Date.now(0)
     newClient.save()
     createCookieToken(newClient , res)
 })
@@ -59,7 +60,7 @@ exports.clientLoginGoogle = catchError(async (req , res , next) => {
           googleID : req.user.id,
           cartCount : 0,
           cartTotalPrice : 0,
-          walletAmount : 0
+          walletAmount : 0,
         })
         createCookieToken(newClient , res)
     }

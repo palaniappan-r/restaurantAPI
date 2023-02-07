@@ -6,6 +6,6 @@ const reviewSchema = new Schema({
     client_name : String,
     text : String,
     rating : Number
-})
+},{timestamps: true})
 
 module.exports = mongoose.model("Review" , reviewSchema)

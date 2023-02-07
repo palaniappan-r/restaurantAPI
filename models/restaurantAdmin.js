@@ -15,7 +15,7 @@ const restaurantAdminSchema = new mongoose.Schema({
     password : {
         type : String,
     }
-})
+},{timestamps: true})
 
 restaurantAdminSchema.pre("save" , async function (next) {
     if(!(this.isModified('password'))){

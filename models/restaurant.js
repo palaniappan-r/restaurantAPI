@@ -36,7 +36,7 @@ const itemSchema = new Schema({
     image : {
         type : [imageSchema]
     }
-})
+},{timestamps: true})
 
 const RestaurantSchema =  new Schema({
     name : {

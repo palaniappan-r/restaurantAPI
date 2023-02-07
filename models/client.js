@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const Schema = mongoose.Schema
 const Order = require('./order')
 
-const clientSchema = new mongoose.Schema({
+const clientSchema = new Schema({
     name : {
         type : String,
     },
@@ -23,6 +23,9 @@ const clientSchema = new mongoose.Schema({
             ref : Order
         }]
     },
+    address :{
+        type  : String
+    },
     cartCount : {
         type : Number,
         min : 0
@@ -37,8 +40,8 @@ const clientSchema = new mongoose.Schema({
     },
     googleID : {
         type : String
-    }
-})
+    },
+},{timestamps: true})
 
 clientSchema.pre("save" , async function (next) {
     if(!(this.isModified('password'))){

@@ -30,7 +30,7 @@ const orderSchema = new mongoose.Schema({
         type : String,
         enum : ['Received','Confirmed','Cooking','Done','Cancelled']
     }
-})
+},{timestamps: true})
 
 
 module.exports = mongoose.model("Order" , orderSchema)

@@ -3,6 +3,7 @@ const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
 const passport = require('passport')
+
 const { 
     clientIsLoggedIn ,
     restaurantAdminIsLoggedIn
@@ -102,10 +103,5 @@ router.route('/addReview/:rest_id').post(validateReview , addReview)
 router.route('/removeReview/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
 
 router.route('/logout').get(logout)
-
-// router.use((err , req , res , next) => {
-//     const {statusCode = 400 , message = "ERROR"} = err
-//     res.render('errorPage' , {statusCode , message})
-// })
 
 module.exports = router
