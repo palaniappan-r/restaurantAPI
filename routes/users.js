@@ -2,11 +2,11 @@ const express = require('express')
 const router = express.Router()
 const { urlencoded } = require('express');
 const methodOverride = require('method-override');
+const passport = require('passport')
 const { 
     clientIsLoggedIn ,
     restaurantAdminIsLoggedIn
 } = require('../middleware/validatePermissions')
-
 const { 
     addReview, 
     deleteReview, 
@@ -27,6 +27,8 @@ const {
     addFundsToWallet,
     clientCurrentOrders,
     clientPastOrders,
+    clientLoginGoogle,
+    restaurantAdminLoginGoogle
 } = require('../controllers/userController');
 
 const {
@@ -53,6 +55,10 @@ router.route('/clientLogin').get(clientLoginForm)
 
 router.route('/clientLogin').post(validateClient , clientLogin)
 
+router.route('/clientLogin/google').get(passport.authenticate("clientLogin" , {scope : ['email' , 'profile']}))
+
+router.route('/clientLogin/google/redirect').get(passport.authenticate("clientLogin") , clientLoginGoogle);
+
 router.route('/clientSignup').get(signupClientForm)
 
 router.route('/clientSignup').post(validateClient , signupClient)
@@ -66,6 +72,10 @@ router.route('/pastOrders').get(clientIsLoggedIn , clientPastOrders)
 router.route('/restaurantAdminLogin').get(restaurantAdminLoginForm)
 
 router.route('/restaurantAdminLogin').post(validateRestaurantAdmin , restaurantAdminLogin)
+
+router.route('/restaurantAdminLogin/google').get(passport.authenticate("restaurantAdminLogin" , {scope : ['email' , 'profile']}))
+
+router.route('/restaurantAdminLogin/google/redirect').get(passport.authenticate("restaurantAdminLogin") , restaurantAdminLoginGoogle);
 
 router.route('/restaurantAdminSignup').get(signupRestaurantAdminForm)
 
@@ -93,9 +103,9 @@ router.route('/removeReview/:rest_id/:review_id').delete(restaurantAdminIsLogged
 
 router.route('/logout').get(logout)
 
-router.use((err , req , res , next) => {
-    const {statusCode = 400 , message = "ERROR"} = err
-    res.render('errorPage' , {statusCode , message})
-})
+// router.use((err , req , res , next) => {
+//     const {statusCode = 400 , message = "ERROR"} = err
+//     res.render('errorPage' , {statusCode , message})
+// })
 
-module.exports = router 
+module.exports = router

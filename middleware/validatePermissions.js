@@ -8,7 +8,7 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
    // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
     if(!token){
-        req.session.destroy()
+        req.session = null
         return next(new errorClass("Login to Access Site" , 401))
     }
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
@@ -22,7 +22,7 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
     else{
         const userInfo = await Client.findById(decoded.id)
         if(!userInfo){
-            req.session.destroy()
+            req.session = null
             return next(new errorClass("Login as Client to Access Site" , 401))
         }
         userInfo.password = undefined
@@ -36,7 +36,7 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
     if(!token){
-        req.session.destroy()
+        req.session = null
         return next(new errorClass("Login to Access Site" , 401))
     }
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
@@ -50,7 +50,7 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     else{
         const userInfo = await RestaurantAdmin.findById(decoded.id)
         if(!userInfo){
-            req.session.destroy()
+            req.session = null
             return next(new errorClass("Login as Client to Access Site" , 401))
         }
         userInfo.password = undefined

@@ -6,7 +6,7 @@ const createCookieToken = (user , res) => {
         ),
         httpOnly : true
     }
-    res.cookie('token' , token , options).redirect('/restaurants')
+    return res.cookie('token' , token , options).redirect('/restaurants')
 }
 
 module.exports = createCookieToken

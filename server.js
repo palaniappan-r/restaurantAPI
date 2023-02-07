@@ -12,22 +12,26 @@ const methodOverride = require('method-override')
 const ErrorClass = require('./utilities/errorClass.js')
 const restaurants = require('./routes/restaurants.js')
 const users = require('./routes/users')
-
-require('dotenv').config()
+const passport = require('passport')
+const passportAuth = require('./middleware/passport')
+const dotevConfig = require('dotenv').config()
 
 connectDB()
 connectSessionStore()
 
 //app.use(morgan('tiny'))
+app.use(session(sessionConfig))
+//app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(cookieParser())
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 app.engine('ejs', ejsMate)
 app.use(methodOverride('_method'))
 app.use(express.static('public'))
-app.use(session(sessionConfig))
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.get('/' , (req , res) => {
     res.redirect('/restaurants')}

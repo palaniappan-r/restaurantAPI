@@ -28,7 +28,7 @@ exports.clientLoginForm = ((req , res , next) => {
     res.render('../views/client_login.ejs')
  })
 
- exports.clientLogin = catchError(async (req , res , next) => {
+exports.clientLogin = catchError(async (req , res , next) => {
     const {email , password} = req.body
     
     if(!email || !password)
@@ -45,7 +45,24 @@ exports.clientLoginForm = ((req , res , next) => {
         return next(new errorClass('Wrong Password' , 400))
 
     createCookieToken(client , res)
+})
 
+exports.clientLoginGoogle = catchError(async (req , res , next) => {
+    const client = await Client.findOne({email : req.user._json.email})
+    if(client){
+        createCookieToken(client , res)
+    }
+    else{
+        const newClient = await Client.create({
+          name : req.user._json.name,
+          email : req.user._json.email,
+          googleID : req.user.id,
+          cartCount : 0,
+          cartTotalPrice : 0,
+          walletAmount : 0
+        })
+        createCookieToken(newClient , res)
+    }
 })
 
 exports.signupRestaurantAdminForm = ((req , res , next) => {
@@ -86,12 +103,27 @@ exports.restaurantAdminLogin = catchError(async (req , res , next) => {
     createCookieToken(restaurantAdmin , res)
 })
 
+exports.restaurantAdminLoginGoogle = catchError(async (req , res , next) => {
+    const restaurantAdmin = await RestaurantAdmin.findOne({email : req.user._json.email})
+    if(restaurantAdmin){
+        createCookieToken(restaurantAdmin , res)
+    }
+    else{
+        const newRestaurantAdmin = await RestaurantAdmin.create({
+          name : req.user._json.name,
+          email : req.user._json.email,
+          googleID : req.user.id,
+        })
+        createCookieToken(newRestaurantAdmin , res)
+    }
+})
+
 exports.logout = catchError(async (req , res , next) => {
     res.cookie('token' , null , {
         expires : new Date(Date.now()),
         httpOnly : true
     })
-    req.session.destroy()
+    req.session = null
     res.redirect('/')
 })
 
@@ -100,7 +132,7 @@ exports.restaurantAdminLogout = catchError(async (req , res , next) => {
         expires : new Date(Date.now()),
         httpOnly : true
     })
-    req.session.destroy()
+    req.session = null
     res.redirect('/')
 })
 

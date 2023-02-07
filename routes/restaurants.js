@@ -78,9 +78,9 @@ router.route('/:rest_id/:order_id/updateOrderStatus').put(restaurantAdminIsLogge
 //DELETE Route to cancel order
 router.route('/:rest_id/:order_id/cancelOrder').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
 
-router.use((err , req , res , next) => {
-    const {statusCode = 400 , message = "ERROR"} = err
-    res.render('errorPage' , {statusCode , message})
-})
+// router.use((err , req , res , next) => {
+//     const {statusCode = 400 , message = "ERROR"} = err
+//     res.render('errorPage' , {statusCode , message})
+// })
 
 module.exports = router

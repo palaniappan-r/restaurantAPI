@@ -34,6 +34,9 @@ const clientSchema = new mongoose.Schema({
     walletAmount : {
         type : Number,
         min : 0
+    },
+    googleID : {
+        type : String
     }
 })
 
