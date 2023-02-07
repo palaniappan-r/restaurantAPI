@@ -1,4 +1,4 @@
-# restaurantApp
+# restaurantAPI
 
 ### Requirements:
 
