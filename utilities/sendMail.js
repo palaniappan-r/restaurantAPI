@@ -17,7 +17,7 @@ const sendMail = catchError(async (receiver , subj ,msg) => {
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'palaniappan.r.testing@outlook.com', // sender address
+    from: process.env.MAIL_ID, // sender address
     to: receiver, // list of receivers
     subject: subj, // Subject line
     text: msg, // plain text body
