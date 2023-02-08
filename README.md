@@ -1,6 +1,6 @@
 # restaurantAPI
 
-A restaurant management API that Express.js with MongoDB + Redis. A basic frontend is written in EJS.
+A restaurant management API in Express.js that uses MongoDB as a database and Redis as session store. A basic frontend is written in EJS.
 
 # API Reference
 Schema Validations to endpoints are done using JOI
