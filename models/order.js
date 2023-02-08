@@ -1,5 +1,20 @@
 const mongoose = require('mongoose')
 
+const clientOrder = new mongoose.Schema({
+    itemID : {
+        type : String
+    },
+    itemName : {
+        type : String
+    },
+    unitPrice : {
+        type : Number
+    },
+    quantity : {
+        type : Number
+    }
+})
+
 const orderSchema = new mongoose.Schema({
     clientID : {
         type : String,
@@ -10,19 +25,20 @@ const orderSchema = new mongoose.Schema({
     restaurantName : {
         type : String,
     },
-    itemID : {
-        type : String,
-    },
-    itemName : {
-        type : String,
-    },
-    quantity : {
-        type : Number,
-        min : 1,
-    },
-    unitPrice : {
-        type : Number,
-    },
+    // itemID : {
+    //     type : String,
+    // },
+    // itemName : {
+    //     type : String,
+    // },
+    // quantity : {
+    //     type : Number,
+    //     min : 1,
+    // },
+    // unitPrice : {
+    //     type : Number,
+    // },
+    items : [clientOrder],
     totalPrice : {
         type : Number,
     },

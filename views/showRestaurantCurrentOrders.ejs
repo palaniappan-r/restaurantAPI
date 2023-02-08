@@ -5,17 +5,20 @@
     <% for(i of rest.currentOrders) { %> 
         <div class="card text-center">
             <div class="card-header">
-               <h2> <%= i.itemName %> </h2>
+                <h4> Order ID : <%= i._id %> </h4>
+                <h6> Last Update : <%= i.updatedAt %> </h6>
             </div>
             <div class="d-inline"><br>
-             <h6> Quantity : <%=i.quantity%></h6> 
+            <% for(j of i.items) {%> 
+                    <h5><%=j.itemName%> - <%=j.quantity%></h5> 
+            <% } %> 
              <h6> Current Status : <%=i.status%></h6> 
-            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/cancelOrder/?_method=DELETE" method="POST">
+            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/?_method=DELETE" method="POST">
                 <button class = "btn btn-outline-danger col-2">
                     Cancel Order
                 </button> 
             </form><br>
-            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/updateOrderStatus/?_method=PUT" method="POST">
+            <form action="/restaurants/<%=rest._id%>/<%=i._id%>/?_method=PUT" method="POST">
                 <label for="status">Status</label>
                 <select name="status" id="status">
                     <option value="Received">Received</option>
@@ -26,7 +29,6 @@
                 <input type="submit" value="Submit">
           </form>
             <br>
-                <h6>Unit Price : <%=i.unitPrice%></h6>
                 <h6>Total Price : <%=i.totalPrice%></h6>
         </div>
     <br>  

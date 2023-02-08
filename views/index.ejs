@@ -13,7 +13,7 @@
                 <span class="badge badge-danger"> <%= i.cuisines[j] %></span>
             <% } %> 
           </p>
-          <a href=<%=`/restaurants/${i._id}`%> class="btn btn-primary">View Menu</a>
+          <a href=<%=`/restaurants/client/${i._id}`%> class="btn btn-primary">View Menu</a>
         </div>
         <div class="card-footer text-muted">
            Avg Price : <%=`₹${Math.ceil(i.avgPrice)}`%>

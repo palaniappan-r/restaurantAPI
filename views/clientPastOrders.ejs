@@ -1,17 +1,21 @@
 <% layout ('/layouts/boilerplate') %>
-    <h1 class = "text-center">Current Orders</h1>
+    <h1 class = "text-center">Past Orders</h1>
 <ul>
     <% for(i of orders) { %> 
         <div class="card text-center">
             <div class="card-header">
-               <h2> <%= i.itemName %> </h2>
+               <h4> Order ID : <%= i._id %> </h4>
+               <h6> Last Update : <%= i.updatedAt %> </h6>
             </div>
             <div class="d-inline"><br>
-             <h4> Quantity : <%=i.quantity%></h4> 
-             <h6> Current Status</h6> 
-             <h2><span class="badge badge-info"> <%=i.status%> </span></h2>
+                <% for(j of i.items) {%> 
+                <h5><%=j.itemName%> - <%=j.quantity%></h5> 
+                <% } %> 
+                <h5>Total Price : <%=i.totalPrice%></h5>
+                <h2><span class="badge badge-info"> <%=i.status%> </span></h2>
+                    <form action="/user/order/<%=i._id%>/?_method=DELETE" method="POST">
+            </form><br>
             <br>
-                <h6>Total Price : <%=i.totalPrice%></h6>
         </div>
     <br>  
     <% } %>

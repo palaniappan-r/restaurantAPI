@@ -37,10 +37,10 @@ router.route('/').get(clientIsLoggedIn , indexPage)
 router.route('/new').get(restaurantAdminIsLoggedIn , newRestaurantForm)
 
 //GET Route to display info about a specific restaurant for the client
-router.route('/:rest_id').get(clientIsLoggedIn , showRestaurantClientInfo)
+router.route('/client/:rest_id').get(clientIsLoggedIn , showRestaurantClientInfo)
 
 //GET Route to display info about a specific restaurant for the owner
-router.route('/admin/:rest_id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
+router.route('/:rest_id').get(restaurantAdminIsLoggedIn , showRestaurantAdminInfo)
 
 //GET Route to get total revenue of a restaurant
 router.route('/:rest_id/totalRevenue').get(restaurantAdminIsLoggedIn , getTotalRevenue)
@@ -73,14 +73,9 @@ router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaura
 router.route('/:rest_id/pastOrders').get(restaurantAdminIsLoggedIn , restaurantPastOrders)
 
 //PUT Route to update order status
-router.route('/:rest_id/:order_id/updateOrderStatus').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
+router.route('/:rest_id/:order_id').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
 
 //DELETE Route to cancel order
-router.route('/:rest_id/:order_id/cancelOrder').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
-
-// router.use((err , req , res , next) => {
-//     const {statusCode = 400 , message = "ERROR"} = err
-//     res.render('errorPage' , {statusCode , message})
-// })
+router.route('/:rest_id/:order_id').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
 
 module.exports = router

@@ -4,28 +4,26 @@ const Order = require('../models/order')
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
 const User = require("../models/client")
+const Item = require("../models/item")
 
 exports.addItemToCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
-    const restaurant = await Restaurant.findById(req.params.rest_id)
-    let item
-    for(let i of restaurant.items){
-        if(JSON.stringify(i._id) == JSON.stringify(req.params.item_id)){
-            item = i
-        }
+    const item = await Item.findById(req.params.item_id)
+
+    if(client.cart[0]){
+        const inCart = await Item.findById(client.cart[0].itemID)
+        if(inCart.restaurantID != item.restaurantID)
+            return next(new ErrorClass('You cannot add items from different restaurants to the cart'))
     }
-    const newOrder = await Order.create({
-        clientID : client._id,
-        restaurantID : req.params.rest_id,
-        itemID : req.params.item_id,
-        restaurantName : restaurant.name,
+
+    const newCartItem = {
+        itemID : item._id,
         itemName : item.name,
-        quantity : req.body.quantity,
         unitPrice : item.price,
-        totalPrice : (item.price * req.body.quantity),
-    }) 
-    newOrder.save()
-    client.cart.push(newOrder._id)
+        quantity : req.body.quantity
+    }
+    client.cart.push(newCartItem)
+
     client.cartTotalPrice += (item.price * req.body.quantity)
     client.cartCount += 1
     client.save()
@@ -33,15 +31,12 @@ exports.addItemToCart = catchError(async (req , res , next) => {
 
 exports.removeItemFromCart = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
-    let order
-    let index = 0
+    var index = 0
     for(let i of client.cart){
-        if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
-            order = await Order.findById(i)
+        if(JSON.stringify(i.itemID) === JSON.stringify(req.params.item_id)){
             client.cartCount -= 1
-            client.cartTotalPrice -= order.totalPrice
+            client.cartTotalPrice -= (i.quantity * i.unitPrice)
             client.cart.splice(index,1)
-            await Order.findByIdAndDelete(i)
             break
         }
         index++
@@ -52,15 +47,12 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
-    let order
     for(let i of client.cart){
-        if(JSON.stringify(i) === JSON.stringify(req.params.order_id)){
-            order = await Order.findById(i)
-            client.cartTotalPrice -= order.totalPrice
-            order.quantity = req.body.new_quantity
-            order.totalPrice = (order.quantity * order.unitPrice)
-            await order.save()
-            client.cartTotalPrice += order.totalPrice
+        console.log(i)
+        if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
+            client.cartTotalPrice -= (i.quantity * i.unitPrice)
+            i.quantity = req.body.new_quantity
+            client.cartTotalPrice += (i.quantity * i.unitPrice)
             break
         }
     }
@@ -70,15 +62,20 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
 
 exports.placeOrder = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
-    if(client.walletAmount >= client.cartTotalPrice){
-        for(let i of client.cart){
-            const order = await Order.findById(i)
-            const rest = await Restaurant.findById(order.restaurantID)
-            order.status = 'Received'
-            order.save()
-            rest.currentOrders.push(order)
-            rest.save()
-        }
+    if(client.walletAmount >= client.cartTotalPrice){ 
+        const newOrder = await Order.create({
+            clientID : client._id,
+        }) 
+        const sampleItem = await Item.findById(client.cart[0].itemID)
+        const rest = await Restaurant.findById(sampleItem.restaurantID)
+        newOrder.items = client.cart
+        newOrder.totalPrice  = client.cartTotalPrice
+
+        rest.currentOrders.push(newOrder)
+        rest.save()
+
+        newOrder.status = 'Received'
+        newOrder.save()
         client.walletAmount -= client.cartTotalPrice  
         client.cartTotalPrice = 0
         client.cart = []

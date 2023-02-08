@@ -5,6 +5,21 @@ const jwt = require('jsonwebtoken')
 const Schema = mongoose.Schema
 const Order = require('./order')
 
+const cartSchema = new Schema({
+    itemID : {
+        type : String
+    },
+    itemName : {
+        type : String
+    },
+    unitPrice : {
+        type : Number
+    },
+    quantity : {
+        type : Number
+    }
+})
+
 const clientSchema = new Schema({
     name : {
         type : String,
@@ -18,10 +33,7 @@ const clientSchema = new Schema({
         type : String,
     },
     cart :{
-        type : [{
-            type : Schema.Types.ObjectId,
-            ref : Order
-        }]
+        type : [cartSchema]
     },
     address :{
         type  : String

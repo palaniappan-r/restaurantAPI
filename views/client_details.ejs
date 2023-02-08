@@ -35,19 +35,18 @@
             <div class="d-inline">
                 <li class="list-group-item"> <h2> <%=i.itemName%></h2> 
             <div class="text-right">
-            <form action="/user/updateCartQuantity/<%=i._id%>/?_method=PUT" method="POST"> 
+            <form action="/user/cart/<%=i.itemID%>/?_method=PUT" method="POST"> 
                     Quantity : <input class="col-1 mb-3" type="number" class="form-control" id="new_quantity" aria-describedby="new_quantity" name="new_quantity" value="<%=`${i.quantity}`%>" required>
                     <button class = "btn btn-outline-warning col-1">Update</button><br>
             </form>
              </div>
-            <form action="/user/removeFromCart/<%=i._id%>/?_method=DELETE" method="POST">
+            <form action="/user/cart/<%=i.itemID%>/?_method=DELETE" method="POST">
                 <button class = "btn btn-outline-danger col-2">
                     Remove From Cart
                 </button> 
             </form>
             <br>
                 <h6>Unit Price : <%=i.unitPrice%></h6>
-                <h6>Total Price : <%=i.totalPrice%></h6>
             </div>
         </div>
     <br>  

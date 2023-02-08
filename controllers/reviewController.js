@@ -8,8 +8,8 @@ const Client = require('../models/client')
 exports.addReview = catchError(async(req , res , next) =>{ 
     const client = await Client.findById(req.session.user._id)
     const rest = await Restaurant.findById(req.params.rest_id)
-        const orders = await Order.findOne({'clientID' : req.session.user._id , 'status' : 'Done'})
-        if(orders){
+        const order = await Order.findOne({'clientID' : req.session.user._id , 'status' : 'Done'})
+        if(order){
             const rev = new Review(req.body.review)
             rev.client_id = client._id
             rev.client_name = client.name

@@ -2,41 +2,7 @@ const mongoose = require('mongoose');
 const Order = require('./order.js');
 const Schema = mongoose.Schema;
 const Review = require('./review.js')
-
-const imageSchema = new Schema({
-    url: String,
-    filename: String
-});
-
-const itemSchema = new Schema({
-    name : {
-        type : String,
-    },
-
-    price : {
-        type : Number,
-    },
-
-    veg : {
-        type : Boolean,
-    },
-
-    vegan : {
-        type : Boolean,
-    },
-
-    description : {
-        type : String
-    },
-
-    signature : {
-        type : Boolean
-    },
-
-    image : {
-        type : [imageSchema]
-    }
-},{timestamps: true})
+const Item = require('./item.js')
 
 const RestaurantSchema =  new Schema({
     name : {
@@ -63,9 +29,12 @@ const RestaurantSchema =  new Schema({
         type : Boolean
     },
 
-    items : {
-        type:[itemSchema]
-    }, 
+    items : [
+        {
+            type : Schema.Types.ObjectId,
+            ref : Item
+        }
+    ],
 
     itemCount : {
         type : Number,

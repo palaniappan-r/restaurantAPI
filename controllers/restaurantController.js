@@ -1,4 +1,5 @@
 const Restaurant = require('../models/restaurant');
+const Item = require('../models/item')
 const catchError = require('../utilities/catchError')
 const ErrorClass = require('../utilities/errorClass')
 
@@ -8,13 +9,13 @@ exports.indexPage = catchError(async(req, res) => {
 })
 
 exports.showRestaurantClientInfo = catchError(async(req , res) => { 
-    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews');
+    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews').populate('items');
     const clientid = (req.session.user._id);
     res.render('show_client',{rest,clientid});
 })
 
 exports.showRestaurantAdminInfo = catchError(async(req , res , next) => { 
-    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews');
+    const rest = await Restaurant.findById(req.params.rest_id).populate('reviews').populate('items');
     const userid = req.session.user._id
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
@@ -51,8 +52,14 @@ exports.addNewRestaurant = catchError(async(req , res , next) => {
     rest.restaurantOwner = req.session.user.name
     rest.totalRevenue = 0
     await rest.save()
-    //req.flash('success' , 'Successfully Added a Restaurant ')
-    return res.redirect(`/restaurants/admin/${rest._id}`)
+    return res.redirect(`/restaurants/${rest._id}`)
+})
+
+exports.editRestaurantForm = catchError(async(req , res) => { 
+    const {rest_id} = req.params;
+    const rest = await Restaurant.findById(rest_id);
+    let temp = [rest.items , rest.avgPrice , rest.itemCount]
+    res.render('update',{rest});
 })
 
 exports.updateRestaurantDetails = catchError(async(req , res) => { 
@@ -80,7 +87,7 @@ exports.updateRestaurantDetails = catchError(async(req , res) => {
     rest.avgPrice = temp[1]
     rest.itemCount = temp[2]
     rest.save()
-    return res.redirect(`/restaurants/admin/${rest._id}`)
+    return res.redirect(`/restaurants/${rest._id}`)
 })
 
 exports.removeRestaurant = catchError(async(req , res , next) => {
@@ -100,58 +107,53 @@ exports.addNewItem = catchError(async(req , res) => {
     if(!req.body.item)
         return next (new ErrorClass('EMPTY REQUEST BODY' , 400))
 
-    const rest = await Restaurant.findById(req.params.rest_id)
+    const rest = await Restaurant.findById(req.params.rest_id).populate('items')
     if((rest.restaurantAdminID != req.session.user._id))
        return next(new ErrorClass('You can only access your own restaurant',400))
 
     rest.itemCount += 1
     await rest.save()
-
-    rest.items.push(req.body.item)
-
+    const newItem = new Item(req.body.item)
+    newItem.restaurantID = rest._id
+    rest.items.push(newItem)
+    await newItem.save()
     await rest.save()
 
     let avgP = 0
     for(let i of rest.items)
-        avgP += i.price
+         avgP += i.price
     rest.avgPrice = (avgP/rest.itemCount)
 
     await rest.save()
-    return res.redirect(`/restaurants/admin/${req.params.rest_id}`)
+    return res.redirect(`/restaurants/${req.params.rest_id}`)
 })
 
 exports.removeItem = catchError(async(req , res) => { 
     const rest_id = req.params.rest_id
     const item_id = req.params.item_id
     const rest = await Restaurant.findById(rest_id)
+    const item = await Item.findById(item_id)
+
     if(rest.restaurantAdminID != req.session.user._id)
        return next(new ErrorClass('You can only access your own restaurant',400))
 
-    for(let i of rest.items){
-        if(JSON.stringify(i._id) == JSON.stringify(item_id)){
-            i.remove()
-            rest.itemCount -= 1
-        }
-    }
+    rest.items.splice(rest.items.indexOf(item._id) , 1)
+    rest.itemCount -= 1
+    await Item.findByIdAndDelete(item_id)
+    await rest.save()
 
-    if(rest.itemCount != 0){
+    const restPopulated = await Restaurant.findById(rest_id).populate('items')
+    if(restPopulated.itemCount != 0){
         let avgP = 0
-        for(let i of rest.items)
+        for(let i of restPopulated.items)
             avgP += i.price
-        rest.avgPrice = (avgP/rest.itemCount)
+        restPopulated.avgPrice = (avgP/rest.itemCount)
     }
     else
-        rest.avgPrice = 0
-
-    rest.save()
-    return res.redirect(`/restaurants/admin/${rest._id}`)
-})
-
-exports.editRestaurantForm = catchError(async(req , res) => { 
-    const {rest_id} = req.params;
-    const rest = await Restaurant.findById(rest_id);
-    let temp = [rest.items , rest.avgPrice , rest.itemCount]
-    res.render('update',{rest});
+        restPopulated.avgPrice = 0
+    
+    await restPopulated.save()
+    return res.redirect(`/restaurants/${rest._id}`)
 })
 
 exports.getTotalRevenue = catchError(async(req , res , next) => {

@@ -145,6 +145,7 @@ exports.clientDetails =  catchError(async (req, res , next) => {
 exports.clientCurrentOrders = catchError(async (req, res , next) => {
     const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
     const orders = await Order.find(query)
+    console.log(orders)
     res.render('../views/clientCurrentOrders' , {orders})
 })
 

@@ -15,13 +15,13 @@ const users = require('./routes/users')
 const passport = require('passport')
 const passportAuth = require('./middleware/passport')
 const dotevConfig = require('dotenv').config()
+const sendMail = require('./utilities/sendMail')
 
 connectDB()
 connectSessionStore()
 
 //app.use(morgan('tiny'))
 app.use(session(sessionConfig))
-//app.use(session({ secret: 'cats', resave: false, saveUninitialized: true }));
 app.use(cookieParser())
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
@@ -32,6 +32,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(passport.initialize())
 app.use(passport.session())
+
+//sendMail('palaniappan.r.mail@gmail.com' , 'Hello' , 'HI')
 
 app.get('/' , (req , res) => {
     res.redirect('/restaurants')}

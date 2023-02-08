@@ -84,19 +84,19 @@ router.route('/restaurantAdminSignup').post(validateRestaurantAdmin , signupRest
 
 router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantAdminHome)
 
-router.route('/addToCart/:rest_id/:item_id').post(clientIsLoggedIn, validateOrder , addItemToCart)
+router.route('/cart/:item_id').post(clientIsLoggedIn , addItemToCart) //Add validation
 
-router.route('/removeFromCart/:order_id').delete(clientIsLoggedIn , removeItemFromCart)
+router.route('/cart/:item_id').delete(clientIsLoggedIn , removeItemFromCart)
 
-router.route('/updateCartQuantity/:order_id').put(clientIsLoggedIn , updateItemCartQuantity) //Add validation here
+router.route('/cart/:item_id').put(clientIsLoggedIn , updateItemCartQuantity) //Add validation here
 
 router.route('/addFundsToWallet').post(clientIsLoggedIn , validateFunds , addFundsToWallet)
 
 router.route('/placeOrder').get(clientIsLoggedIn , placeOrder)
 
-router.route('/getOrderStatus/:order_id').get(clientIsLoggedIn , clientGetOrderStatus)
+router.route('/order/:order_id').get(clientIsLoggedIn , clientGetOrderStatus)
 
-router.route('/cancelOrder/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
+router.route('/order/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
 
 router.route('/addReview/:rest_id').post(validateReview , addReview)
 
