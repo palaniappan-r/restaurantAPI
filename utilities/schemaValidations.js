@@ -1,4 +1,4 @@
-const ErrorClass = require('../utilities/ErrorClass.js')
+const ErrorClass = require('../utilities/errorClass.js')
 const joi = require('joi');
 
 const validateRestaurant = (req , res , next) => {
@@ -41,7 +41,6 @@ const validateItem = (req , res , next) => {
 }
 
 const validateClient = (req , res , next) => {
-    console.log('Hello oomfies')
     const clientSchema = joi.object({
         name: joi.string(),
         email : joi.string(),

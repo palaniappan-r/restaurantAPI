@@ -1,15 +1,15 @@
-FROM node:16
+FROM node:16.17.1
 
-WORKDIR /usr/src/app
+WORKDIR /dir/restaurant-api
 
-COPY package*.json ./
+COPY package.json /dir/restaurant-api
 
 RUN npm install
-# For production
-# RUN npm ci --only=production
 
-COPY . .
+COPY . /dir/restaurant-api
+
+COPY .env ./.env
 
 EXPOSE 3000
 
-CMD [ "node", "server.js" ]
+CMD ["npm" , "start"]

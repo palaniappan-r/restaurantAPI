@@ -1,0 +1,25 @@
+version: '3'
+services:
+  restaurant-api:
+    container_name: restaurant-api
+    restart: always
+    build: .
+    ports:
+      - '3000:3000'
+    links:
+      # - redis
+      - mongo
+    env_file:
+      - ./.env
+  mongo:
+    container_name: mongodb
+    image: 'mongo'
+    env_file:
+      - ./.env
+    ports:
+       - '27017:27017'
+  # redis:
+  #   container_name: restaurant-api-redis
+  #   image: 'redis'
+  #   env_file:
+  #     - ./.env

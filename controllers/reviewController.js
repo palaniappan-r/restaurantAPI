@@ -16,7 +16,7 @@ exports.addReview = catchError(async(req , res , next) =>{
             rest.reviews.push(rev)
             rev.save()
             rest.save()
-            res.redirect(`/restaurants/${rest._id}`)
+            res.redirect(`/restaurants/client/${rest._id}`)
         }
         else
             return next(new ErrorClass('You need atleast one completed order to add a review to this restaurant' , 400))
@@ -30,10 +30,7 @@ exports.deleteReview = catchError(async(req , res) =>{
         await Restaurant.findByIdAndUpdate(req.params.rest_id , { $pull : { reviews: req.params.review_id}})
         await Review.findByIdAndDelete(req.params.review_id)
         rest.save()
-        res.redirect(`/restaurants/admin/${rest._id}`)
+        res.redirect(`/restaurants/${rest._id}`)
     }
 })
 
-exports.test = ((req,res) => {
-    console.log('hello')
-})

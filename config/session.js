@@ -16,10 +16,10 @@ const sessionConfig = {
     secret : process.env.SESSION_SECRET_KEY,
     resave : false,
     saveUnintialized : true,
-    // store : new redisStore({
-    //     client : redisClient,
-    //     prefix : 'REDIS_SESSION '
-    // }),
+    store : new redisStore({
+        client : redisClient,
+        prefix : 'REDIS_SESSION '
+    }),
 }
 
 module.exports = {connectSessionStore , sessionConfig}

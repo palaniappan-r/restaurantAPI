@@ -48,7 +48,6 @@ exports.removeItemFromCart = catchError(async (req , res , next) => {
 exports.updateItemCartQuantity = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
     for(let i of client.cart){
-        console.log(i)
         if(JSON.stringify(i.itemID) == JSON.stringify(req.params.item_id)){
             client.cartTotalPrice -= (i.quantity * i.unitPrice)
             i.quantity = req.body.new_quantity
@@ -168,7 +167,8 @@ exports.clientCancelOrder = catchError(async (req , res , next) => {
     if(!(client._id.equals(order.clientID)))
         return next(new ErrorClass('You can only update items in your cart',400))
     else{
-        const rest = await Restaurant.findById(order.restaurantID)
+        const item = await Item.findById(order.items[0].itemID)
+        const rest = await Restaurant.findById(item.restaurantID)
         if(order.status == 'Received' || order.status == 'Confirmed'){
             const user = await User.findById(order.clientID)
             user.walletAmount += order.totalPrice

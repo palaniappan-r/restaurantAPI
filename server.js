@@ -15,7 +15,7 @@ const users = require('./routes/users')
 const passport = require('passport')
 const passportAuth = require('./middleware/passport')
 const dotevConfig = require('dotenv').config()
-const sendMail = require('./utilities/sendMail')
+
 
 connectDB()
 connectSessionStore()
@@ -33,7 +33,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize())
 app.use(passport.session())
 
-//sendMail('palaniappan.r.mail@gmail.com' , 'Hello' , 'HI')
 
 app.get('/' , (req , res) => {
     res.redirect('/restaurants')}

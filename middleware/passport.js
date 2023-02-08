@@ -12,7 +12,6 @@ passport.use('clientLogin',
             scope : ['email' , 'profile']
         },
         (function (accessToken , profileToken , profile , next) {
-          //console.log(profile)
           return next(null , profile)
         })
     )

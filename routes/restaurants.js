@@ -55,16 +55,16 @@ router.route('/:rest_id/update').get(restaurantAdminIsLoggedIn , editRestaurantF
 router.route('/:rest_id' , validateRestaurant).put(restaurantAdminIsLoggedIn , updateRestaurantDetails)
 
 //DELETE Route to remove a restaurant
-router.route('/:rest_id/removeRestaurant').delete(restaurantAdminIsLoggedIn , removeRestaurant)
+router.route('/:rest_id').delete(restaurantAdminIsLoggedIn , removeRestaurant)
 
 //POST Route to add a new item
-router.route('/:rest_id/newItem' , validateItem).post(restaurantAdminIsLoggedIn , addNewItem)
+router.route('/:rest_id/items' , validateItem).post(restaurantAdminIsLoggedIn , addNewItem)
 
 //GET Route for new item form
-router.route('/:rest_id/newItem').get(restaurantAdminIsLoggedIn , newItemForm)
+router.route('/:rest_id/items').get(restaurantAdminIsLoggedIn , newItemForm)
 
 //DELETE Route to remove an item
-router.route('/:rest_id/:item_id/removeItem').delete(restaurantAdminIsLoggedIn , removeItem)
+router.route('/:rest_id/:item_id').delete(restaurantAdminIsLoggedIn , removeItem)
 
 //GET Route to view current orders
 router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaurantCurrentOrders)
@@ -73,9 +73,10 @@ router.route('/:rest_id/currentOrders').get(restaurantAdminIsLoggedIn , restaura
 router.route('/:rest_id/pastOrders').get(restaurantAdminIsLoggedIn , restaurantPastOrders)
 
 //PUT Route to update order status
-router.route('/:rest_id/:order_id').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
+router.route('/:rest_id/order/:order_id').put(restaurantAdminIsLoggedIn , restaurantUpdateOrderStatus)
 
 //DELETE Route to cancel order
-router.route('/:rest_id/:order_id').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
+router.route('/:rest_id/order/:order_id').delete(restaurantAdminIsLoggedIn , restaurantCancelOrder)
+
 
 module.exports = router

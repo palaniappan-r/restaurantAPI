@@ -6,9 +6,9 @@ const sendMail = catchError(async (receiver , subj ,msg) => {
   let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
-    host: "hotmail",
+    host: process.env.MAIL_HOST,
     port: 587,
-    secure: false, // true for 465, false for other ports
+    secure: false, 
     auth: {
       user: process.env.MAIL_ID, 
       pass: process.env.MAIL_PASS
@@ -22,10 +22,6 @@ const sendMail = catchError(async (receiver , subj ,msg) => {
     subject: subj, // Subject line
     text: msg, // plain text body
   });
-
-  console.log("Message sent: %s", info.messageId);
-
-  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
 })
 
 

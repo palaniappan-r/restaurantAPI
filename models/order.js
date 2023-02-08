@@ -25,19 +25,6 @@ const orderSchema = new mongoose.Schema({
     restaurantName : {
         type : String,
     },
-    // itemID : {
-    //     type : String,
-    // },
-    // itemName : {
-    //     type : String,
-    // },
-    // quantity : {
-    //     type : Number,
-    //     min : 1,
-    // },
-    // unitPrice : {
-    //     type : Number,
-    // },
     items : [clientOrder],
     totalPrice : {
         type : Number,

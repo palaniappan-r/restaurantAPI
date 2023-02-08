@@ -98,9 +98,9 @@ router.route('/order/:order_id').get(clientIsLoggedIn , clientGetOrderStatus)
 
 router.route('/order/:order_id').delete(clientIsLoggedIn , clientCancelOrder)
 
-router.route('/addReview/:rest_id').post(validateReview , addReview)
+router.route('/review/:rest_id').post(validateReview , addReview)
 
-router.route('/removeReview/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
+router.route('/review/:rest_id/:review_id').delete(restaurantAdminIsLoggedIn,deleteReview)
 
 router.route('/logout').get(logout)
 

@@ -5,6 +5,7 @@ const Order = require('../models/order')
 const errorClass = require("../utilities/errorClass")
 const catchError = require('../utilities/catchError')
 const createCookieToken = require('../utilities/createCookieToken')
+const sendMail = require('../utilities/sendMail')
 
 exports.signupClientForm = ((req , res , next) => {
     res.render('../views/new_client.ejs')
@@ -22,6 +23,7 @@ exports.signupClient = catchError(async (req, res, next) => {
     newClient.walletAmount = 0
     newClient.createdAt = Date.now(0)
     newClient.save()
+    sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
     createCookieToken(newClient , res)
 })
 
@@ -62,6 +64,7 @@ exports.clientLoginGoogle = catchError(async (req , res , next) => {
           cartTotalPrice : 0,
           walletAmount : 0,
         })
+        sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
         createCookieToken(newClient , res)
     }
 })
@@ -77,7 +80,7 @@ exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
         return next(new errorClass('Name/Email/Password Missing' , 400))
 
     const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
-    
+    sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
     createCookieToken(newRestaurantAdmin , res)
 })
 
@@ -115,6 +118,7 @@ exports.restaurantAdminLoginGoogle = catchError(async (req , res , next) => {
           email : req.user._json.email,
           googleID : req.user.id,
         })
+        sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
         createCookieToken(newRestaurantAdmin , res)
     }
 })
