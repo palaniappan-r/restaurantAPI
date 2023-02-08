@@ -6,18 +6,18 @@ const sendMail = catchError(async (receiver , subj ,msg) => {
   let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
-    host: "smtp.zoho.com",
+    host: "hotmail",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      user: 'palaniappan.r.mail@gmail.com', 
-      pass: 'WnUtUKuzZH1h',
+      user: process.env.MAIL_ID, 
+      pass: process.env.MAIL_PASS
     },
   });
 
   // send mail with defined transport object
   let info = await transporter.sendMail({
-    from: 'palaniappan.r.mail@gmail.com', // sender address
+    from: 'palaniappan.r.testing@outlook.com', // sender address
     to: receiver, // list of receivers
     subject: subj, // Subject line
     text: msg, // plain text body
