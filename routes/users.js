@@ -84,11 +84,11 @@ router.route('/restaurantAdminSignup').post(validateRestaurantAdmin , signupRest
 
 router.route('/restaurantAdminHome').get(restaurantAdminIsLoggedIn , restaurantAdminHome)
 
-router.route('/cart/:item_id').post(clientIsLoggedIn , addItemToCart) //Add validation
+router.route('/cart/:item_id').post(clientIsLoggedIn , addItemToCart)
 
 router.route('/cart/:item_id').delete(clientIsLoggedIn , removeItemFromCart)
 
-router.route('/cart/:item_id').put(clientIsLoggedIn , updateItemCartQuantity) //Add validation here
+router.route('/cart/:item_id').put(clientIsLoggedIn , updateItemCartQuantity) 
 
 router.route('/addFundsToWallet').post(clientIsLoggedIn , validateFunds , addFundsToWallet)
 

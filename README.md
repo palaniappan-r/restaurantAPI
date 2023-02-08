@@ -13,7 +13,8 @@ Get info about all the restaurants, for an index page
 
 ### `POST` - /
 Add a restaurant.<br>
-Will add data only if a user registered as a restaurant admin is logged in.
+Will add data only if a user registered as a restaurant admin is logged in.<br>
+This endpoint can be accessed only is the user logged in is a restaurant admin.
 
 ### `GET` - /:rest_id
 Get info about a specific restaurant.
@@ -53,7 +54,8 @@ Will send a result only if the restaurant's admin in logged in.
 
 ### `DELETE` - /:rest_id/order/:order_id
 Cancel an active order.<br>
-Upon cancellation, the order amount will be refunded to the customer.
+Upon cancellation, the order amount will be refunded to the customer.<br>
+Will delete data only if the restaurant's admin is logged in.
 
 <br>
 
@@ -79,34 +81,51 @@ Creates a new user and logs the user in.
 For Google OAuth using PassportJS.
 
 ### `GET` - /clientDetails
-Get basic info and cart items of the currently active user.
+Get basic info and cart items of the currently active user.<br>
+This endpoint can be accessed only is the user logged in is a client.
 
 ### `POST` - /cart/:item_id
 Add an item to the currently active user's cart.
 Items from multiple restaurants cannot be added to the same cart.
+<br>This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `PUT` - /cart/:item_id
-Update quantity of an item in the currently active user's cart.
+Update quantity of an item in the currently active user's cart.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `DELETE` - /cart/:item_id
-Delete an item from the currently active user's cart.
+Delete an item from the currently active user's cart.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `POST` - /addFundsToWallet
-Add funds to the currently active user's wallet.
+Add funds to the currently active user's wallet.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `GET` - /placeOrder
 Place an order for the items in the user's cart.<br>
-Will work only if the user's wallet funds are sufficient for the order.
+Will work only if the user's wallet funds are sufficient for the order.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `GET` - /currentOrders
-Get info about the currently active orders of the currently active user.
+Get info about the currently active orders of the currently active user.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `GET` - /pastOrders
-Get info about the past orders of the currently active user.
+Get info about the past orders of the currently active user.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `GET` - /order/:order_id
 Get the current status of an active order.<br>
-Will send a response only if the user who made the order is logged in.
+Will send a response only if the user who made the order is logged in.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `DELETE` - /order/:order_id
 Remove an active order.<br>
@@ -116,14 +135,16 @@ Will delete only if the user who made the order is logged in.
 
 ### `POST` - /review/:rest_id
 Add a review to a restaurant.<br>
-Will add a review only if the currently active user has at least one completed order from the restaurant.
+Will add a review only if the currently active user has at least one completed order from the restaurant.<br>
+This endpoint can be accessed only is the user logged in is a client.
+
 
 ### `DELETE` - /review/:rest_id
 Remove a review from a restaurant.<br>
 Will delete data only if the restaurant's admin is logged in.
 
 ### `GET` - /logout
-Logs the current user out.<br>
+Logs the active user out.<br>
 
 
 # Environment Variables
