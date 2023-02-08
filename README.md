@@ -145,3 +145,8 @@ Add the following to your  `.env` file.
 `MONGO_INITDB_ROOT_USERNAME`<br>
 `MONGO_INITDB_ROOT_PASSWORD`<br>
 `MAIL_HOST`<br>
+
+
+# Postman
+The workspace can be accessed in this public collection : <br>
+https://elements.getpostman.com/redirect?entityId=19312206-561647fd-c7d4-49d6-ab55-144e25662c2c&entityType=collection
