@@ -5,7 +5,6 @@ const Client = require("../models/client")
 const RestaurantAdmin = require("../models/restaurantAdmin")
 
 exports.clientIsLoggedIn = catchError(async (req , res , next) => {
-   // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
     if(!token){
         req.session = null
@@ -14,7 +13,7 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
     if(req.session.user){
         const userInfo = await Client.findById(decoded.id)
-        if(userInfo)
+        if(JSON.stringify(userInfo._id) == JSON.stringify(req.session.user._id))
             return next()
         else
             return next(new errorClass("Wrong Credentials" , 401))
@@ -23,7 +22,7 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
         const userInfo = await Client.findById(decoded.id)
         if(!userInfo){
             req.session = null
-            return next(new errorClass("Login as Client to Access Site" , 401))
+            return next(new errorClass("Login to Access Site" , 401))
         }
         userInfo.password = undefined
         req.session.user = userInfo
@@ -33,7 +32,6 @@ exports.clientIsLoggedIn = catchError(async (req , res , next) => {
 })
 
 exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
-    // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
     const token = req.cookies.token
     if(!token){
         req.session = null
@@ -42,7 +40,7 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
     const decoded = jwt.verify(token , process.env.JWT_SECRET_KEY)
     if(req.session.user){
         const userInfo = await RestaurantAdmin.findById(decoded.id)
-        if(userInfo)
+        if(JSON.stringify(userInfo._id) == JSON.stringify(req.session.user._id))
             return next()
         else
             return next(new errorClass("Wrong Credentials" , 401))
@@ -51,7 +49,7 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
         const userInfo = await RestaurantAdmin.findById(decoded.id)
         if(!userInfo){
             req.session = null
-            return next(new errorClass("Login as Client to Access Site" , 401))
+            return next(new errorClass("Login to Access Site" , 401))
         }
         userInfo.password = undefined
         req.session.user = userInfo

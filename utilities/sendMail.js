@@ -3,7 +3,6 @@ const catchError = require("./catchError");
 const dotevConfig = require('dotenv').config()
 
 const sendMail = catchError(async (receiver , subj ,msg) => {
-  let testAccount = await nodemailer.createTestAccount();
 
   let transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
