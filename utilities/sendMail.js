@@ -6,20 +6,20 @@ const sendMail = catchError(async (receiver , subj ,msg) => {
 
   let transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
-    port: 587,
-    secure: false, 
+    port: process.env.MAIL_PORT,
+    secure: true, 
     auth: {
       user: process.env.MAIL_ID, 
       pass: process.env.MAIL_PASS
     },
   });
 
-  // send mail with defined transport object
+ 
   let info = await transporter.sendMail({
-    from: process.env.MAIL_ID, // sender address
-    to: receiver, // list of receivers
-    subject: subj, // Subject line
-    text: msg, // plain text body
+    from: process.env.MAIL_ID, 
+    to: receiver, 
+    subject: subj, 
+    text: msg, 
   });
 })
 

@@ -25,10 +25,6 @@ const RestaurantSchema =  new Schema({
         type:Number
     },
 
-    vegan : {
-        type : Boolean
-    },
-
     items : [
         {
             type : Schema.Types.ObjectId,
@@ -77,6 +73,14 @@ const RestaurantSchema =  new Schema({
     totalRevenue : {
         type : Number,
         min : 0
+    },
+
+    openingTime : {
+        type : Number
+    },
+
+    closingTime : {
+        type : Number
     }
 });
 

@@ -157,7 +157,6 @@ exports.removeItem = catchError(async(req , res) => {
 })
 
 exports.getTotalRevenue = catchError(async(req , res , next) => {
-    console.log('hi')
     const rest = await Restaurant.findById(req.params.rest_id)
      if((rest.restaurantAdminID != req.session.user._id))
         return next(new ErrorClass('You can only view your own restaurant',400))

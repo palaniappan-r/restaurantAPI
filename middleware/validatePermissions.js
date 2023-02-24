@@ -62,7 +62,6 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
  exports.clientIsLoggedIn_noToken = catchError(async (req , res , next) => {
     // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
      if(req.session.user){
-         console.log('Exists')
          const userInfo = await Client.findById(req.session.user._id)
          if(userInfo)
              return next()
@@ -75,7 +74,6 @@ exports.restaurantAdminIsLoggedIn = catchError(async (req , res , next) => {
  exports.restaurantAdminIsLoggedIn_noToken = catchError(async (req , res , next) => {
      // const token = req.cookies.token || req.header('Authorization').replace('Bearer ','')
      if(req.session.user){
-         console.log('resExists')
          const userInfo = await RestaurantAdmin.findById(req.session.user._id)
          if(userInfo)
              return next()

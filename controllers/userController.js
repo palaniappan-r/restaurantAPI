@@ -23,7 +23,7 @@ exports.signupClient = catchError(async (req, res, next) => {
     newClient.walletAmount = 0
     newClient.createdAt = Date.now(0)
     newClient.save()
-   // sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
+    sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
     createCookieToken(newClient , res)
 })
 
@@ -64,7 +64,7 @@ exports.clientLoginGoogle = catchError(async (req , res , next) => {
           cartTotalPrice : 0,
           walletAmount : 0,
         })
-       // sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
+        sendMail(newClient.email , 'restaurantAPI' , 'A new user has been registered with this email id')
         createCookieToken(newClient , res)
     }
 })
@@ -80,7 +80,7 @@ exports.signupRestaurantAdmin = catchError(async (req, res, next) => {
         return next(new errorClass('Name/Email/Password Missing' , 400))
 
     const newRestaurantAdmin = await RestaurantAdmin.create(req.body)
-    //sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
+    sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
     createCookieToken(newRestaurantAdmin , res)
 })
 
@@ -118,7 +118,7 @@ exports.restaurantAdminLoginGoogle = catchError(async (req , res , next) => {
           email : req.user._json.email,
           googleID : req.user.id,
         })
-      //  sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
+        sendMail(newRestaurantAdmin.email , 'restaurantAPI' , 'A new restaurant admin has been registered with this email id')
         createCookieToken(newRestaurantAdmin , res)
     }
 })
@@ -149,14 +149,13 @@ exports.clientDetails =  catchError(async (req, res , next) => {
 exports.clientCurrentOrders = catchError(async (req, res , next) => {
     const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
     const orders = await Order.find(query)
-    console.log(orders)
     res.render('../views/clientCurrentOrders' , {orders})
 })
 
 exports.clientPastOrders = catchError(async (req , res , next) => {
     const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
     const orders = await Order.find(query)
-    res.render('../views/clientPastOrders' , {orders}).status(123)
+    res.render('../views/clientPastOrders' , {orders})
 })
 
 exports.restaurantAdminHome = catchError(async(req , res) => {
