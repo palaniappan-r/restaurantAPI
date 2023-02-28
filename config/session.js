@@ -3,7 +3,12 @@ const ErrorClass = require('../utilities/errorClass.js')
 const {createClient} = require('redis')
 const connectRedis = require('connect-redis')
 const redisStore = connectRedis(session)
-const redisClient = createClient({legacyMode: true})
+const dotevConfig = require('dotenv').config()
+const redisClient = createClient({
+    url: process.env.REDIS_URL,
+    legacyMode : true
+});
+//const redisClient = createClient({legacyMode: true})
 
 require('dotenv').config()
 
@@ -18,7 +23,7 @@ const sessionConfig = {
     saveUnintialized : true,
     store : new redisStore({
         client : redisClient,
-        prefix : 'REDIS_SESSION '
+        prefix : 'REDIS_SESSION'
     }),
 }
 

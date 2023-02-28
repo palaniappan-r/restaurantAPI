@@ -20,7 +20,7 @@ const dotevConfig = require('dotenv').config()
 connectDB()
 connectSessionStore()
 
-//app.use(morgan('tiny'))
+app.use(morgan('tiny'))
 app.use(session(sessionConfig))
 app.use(cookieParser())
 app.set('view engine', 'ejs')

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const connectDB = () => {
     mongoose.set("strictQuery", false)
-    mongoose.connect(process.env.DATABASE_URL , {
+    mongoose.connect('mongodb://root:example@mongo:27017/?authSource=admin', {
         useNewUrlParser : true,
         useUnifiedTopology : true
     })

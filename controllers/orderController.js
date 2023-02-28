@@ -61,6 +61,8 @@ exports.updateItemCartQuantity = catchError(async (req , res , next) => {
 
 exports.placeOrder = catchError(async (req , res , next) => {
     const client = await Client.findById(req.session.user._id)
+    if(client.cartCount == 0)
+        return next(new ErrorClass('Your cart is empty',401))
     if(client.walletAmount >= client.cartTotalPrice){ 
         const newOrder = await Order.create({
             clientID : client._id,

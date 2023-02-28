@@ -149,14 +149,13 @@ exports.clientDetails =  catchError(async (req, res , next) => {
 exports.clientCurrentOrders = catchError(async (req, res , next) => {
     const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Confirmed'}, { 'status': 'Cooking' },{ 'status': 'Received' }  ] }
     const orders = await Order.find(query)
-    console.log(orders)
     res.render('../views/clientCurrentOrders' , {orders})
 })
 
 exports.clientPastOrders = catchError(async (req , res , next) => {
     const query = {'clientID' : req.session.user._id ,  $or: [ { 'status': 'Done'}, { 'status': 'Cancelled' } ] }
     const orders = await Order.find(query)
-    res.render('../views/clientPastOrders' , {orders}).status(123)
+    res.render('../views/clientPastOrders' , {orders})
 })
 
 exports.restaurantAdminHome = catchError(async(req , res) => {

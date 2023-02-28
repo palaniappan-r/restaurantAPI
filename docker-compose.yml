@@ -7,19 +7,36 @@ services:
     ports:
       - '3000:3000'
     links:
-      # - redis
+      - redis
       - mongo
     env_file:
       - ./.env
-  mongo:
-    container_name: mongodb
-    image: 'mongo'
+  
+  redis:
+    container_name: restaurant-api-redis
+    image: 'redis'
     env_file:
       - ./.env
     ports:
-       - '27017:27017'
-  # redis:
-  #   container_name: restaurant-api-redis
-  #   image: 'redis'
-  #   env_file:
-  #     - ./.env
+       - '6379:6379'
+
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - mongo-db:/data/db
+    ports:
+      - "27017:27017"
+    env_file:
+      - ./.env
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - ./.env
+      
+volumes:
+    mongo-db:
